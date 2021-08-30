@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+// const LocalStrategy = require('passport-local');
+
 
 const UserSchema = new Schema({
     id: {
@@ -34,9 +36,9 @@ UserSchema.statics.addGoogleUser = function(newUser) {
 }
 
 UserSchema.statics.addLocalUser = function(newUser) {
-    const { id, email, firstName, lastName, password } = newUser;
+    const { email, password } = newUser;
     const user = new this({
-        id, email, firstName, lastName, source: "local"
+        email, password, source: "local"
     })
     return user.save();
 }

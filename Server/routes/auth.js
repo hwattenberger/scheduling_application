@@ -4,7 +4,7 @@ const router = express.Router();
 const auths = require('../controllers/auths');
 
 router.route('/login')
-  .get(auths.login)
+  .post(passport.authenticate('local'), auths.login)
 
 router.route('/logout')
   .get(auths.logout)
@@ -15,7 +15,10 @@ router.route('/google')
 router.route('/google/callback')
   .get(passport.authenticate('google', { failureRedirect: '/auth/google' }), auths.googleCallback);
 
-// router.route('/local/signup')
-//   .post(auths.localSignup);
+router.route('/register')
+  .post(auths.localSignup);
+
+  router.route('/getUser')
+  .get(auths.getUser);
 
 module.exports = router;

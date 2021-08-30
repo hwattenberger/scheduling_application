@@ -6,6 +6,7 @@ const express = require('express');
 const session = require('express-session');
 // const flash = require('connect-flash');
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 
 const mongoose = require('mongoose');
@@ -40,6 +41,7 @@ app.use(express.static(__dirname));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true}));
 
 const store = MongoDBStore.create({
     mongoUrl: dbUrl,
@@ -73,14 +75,13 @@ require("./utils/google");
 require("./utils/local");
 require("./utils/passport");
 
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
-    next();
-})
+// app.use((req, res, next) => {
+//     res.locals.currentUser = req.user;
+//     next();
+// })
 
 app.use('/auth', authRoutes);
 
@@ -93,6 +94,12 @@ app.get('/userRole', async (req, res) => {
     const userRoles = await UserRole.find({});
 
     res.json(userRoles);
+})
+
+app.get('/staff', async (req, res) => {
+    const staff = await User.find({});
+    console.log("Staff", staff);
+    res.json(staff);
 })
 
 app.post('/userRole', async (req, res) => {
