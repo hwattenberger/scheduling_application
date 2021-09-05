@@ -16,6 +16,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const User = require('./models/user');
 const UserRole = require('./models/userRole');
+const ShiftType = require('./models/shiftType');
+const WeeklyAvailability = require('./models/weeklyAvailability');
 
 
 const authRoutes = require('./routes/auth')
@@ -90,16 +92,117 @@ app.get('/', (req, res) => {
     res.send("Yes!"+req.user);
 })
 
+app.get('/shifts', async (req, res) => {
+    const {role} = req.query;
+
+    let shifts=""
+
+    if (role) shifts = await ShiftType.find({role: role}); 
+    else shifts = await ShiftType.find({}).sort({role: 1}).populate({path:'role'});
+
+    console.log("Shifts", shifts)
+    res.json(shifts);
+})
+
+app.post('/shifts', async (req, res) => {
+    const newShiftTypeInfo = req.body.body;
+    console.log("UserRole", req.body.body);
+
+    if(!newShiftTypeInfo.name) res.send("No shift name specified");
+    if(newShiftTypeInfo.role === "") delete newShiftTypeInfo.role
+
+    const newShiftType = new ShiftType(newShiftTypeInfo)
+    await newShiftType.save();
+
+    res.json(newShiftType);
+})
+
+app.put('/shifts/:shiftId', async (req, res) => {
+    const {shiftId} = req.params;
+    const updatedShiftInfo = req.body.body;
+
+    if(updatedShiftInfo.role === "") delete updatedShiftInfo.role
+
+    const updatedShift = await ShiftType.findByIdAndUpdate(shiftId, updatedShiftInfo, {omitUndefined:true});
+    console.log("Staff", req.params);
+    console.log("Staff Query", updatedShiftInfo);
+    console.log("Again", updatedShift)
+
+    res.json(updatedShift)
+})
+
 app.get('/userRole', async (req, res) => {
     const userRoles = await UserRole.find({});
-
     res.json(userRoles);
 })
 
 app.get('/staff', async (req, res) => {
-    const staff = await User.find({});
-    console.log("Staff", staff);
+    const staff = await User.find({}, {password: 0}).populate({path:'userRole'});
+    // delete staff.password;
+    // console.log("Staff", staff);
     res.json(staff);
+})
+
+app.get('/staff/:staffId/available', async (req, res) => {
+    const {staffId} = req.params;
+    const userAvailable = await WeeklyAvailability.find({person: staffId}).populate('weekAvailability.shiftAvailability.shiftType');
+    
+    console.log("User Availability: ", userAvailable);
+
+    res.json(userAvailable)
+})
+
+app.put('/staff/:staffId/available', async (req, res) => {
+    const {staffId} = req.params;
+    const updatedAvailability = req.body.body;
+
+    // console.log("Updated", updatedAvailability)
+
+    const updAvailabilityObject = {
+        weekAvailability: [...updatedAvailability]
+    }
+
+    let userAvailable = await WeeklyAvailability.findOneAndUpdate({person: staffId}, updAvailabilityObject,{omitUndefined:true});
+
+    console.log("userAvailable", userAvailable)
+
+    if(!userAvailable) {
+        userAvailable = new WeeklyAvailability({
+            person: staffId,
+            weekAvailability: [...updatedAvailability]
+        })
+        userAvailable.save();
+    }
+    
+    console.log("User Availability Put", userAvailable);
+    // console.log("Updated Availability", updatedAvailability)
+
+    res.json(userAvailable)
+})
+
+app.get('/staff/:staffId', async (req, res) => {
+    const {staffId} = req.params;
+    const staffMember = await User.findById(staffId).populate({path:'userRole'});
+
+    delete staffMember.password;
+
+    console.log("Staff Query", staffMember);
+
+    res.json(staffMember)
+})
+
+
+app.put('/staff/:staffId', async (req, res) => {
+    const {staffId} = req.params;
+    const updatedUser = req.body.body;
+
+    const staffMember = await User.findByIdAndUpdate(staffId, updatedUser, {omitUndefined:true});
+    // const staff = await User.find({});
+    console.log("Staff", req.params);
+    console.log("Staff Query", staffMember);
+    console.log("Again", updatedUser)
+
+    res.json(staffMember)
 })
 
 app.post('/userRole', async (req, res) => {

@@ -1,0 +1,17 @@
+form {
+    display: inherit;
+}
+
+#createShiftDiv {
+    display: inline;
+}
+
+.inputRole {
+    min-width: 220px;
+}
+
+.inputField {
+    /* background-color: green;
+    margin: 3px;
+    padding: 3px; */
+}

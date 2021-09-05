@@ -7,7 +7,7 @@ const WeeklyAvailabilitySchema = new Schema({
     weekAvailability: [{
         shiftAvailability: [{
             shiftType: { type: Schema.Types.ObjectId, ref: 'ShiftType'},
-            free: Boolean
+            available: Boolean
         }]
     }]
 })

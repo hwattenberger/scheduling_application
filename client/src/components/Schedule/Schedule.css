@@ -1,0 +1,32 @@
+#mainWeekDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+#mainWeekDiv .weekday-div {
+    background-color: lightpink;
+    width: 100%;
+    margin: 2px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+} 
+
+#mainWeekDiv .dayName {
+    font-weight: 500;
+    font-size: 1.2em;
+}
+
+#mainWeekDiv .shiftDiv {
+    background-color: lightsalmon;
+    width: 100%;
+    margin: 2px;
+    padding: 2px;
+    box-sizing: border-box;
+    border-radius: 3px;
+}
+
+#mainWeekDiv .shiftDivActive {
+    background-color: lightseagreen;
+}

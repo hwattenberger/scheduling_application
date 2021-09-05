@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 
 const ShiftTypeSchema = new Schema({
     name: String,
-    defaultNumPerRole: [{
-        role: { type: Schema.Types.ObjectId, ref: 'userRole'},
-        defNum: Number
-    }]
+    role: { type: Schema.Types.ObjectId, ref: 'UserRole'},
+    defNum: Number,
+    startTime: String,
+    endTime: String
 })
 
 module.exports = mongoose.model('ShiftType', ShiftTypeSchema);
