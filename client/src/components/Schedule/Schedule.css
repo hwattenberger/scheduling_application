@@ -1,9 +1,9 @@
-#mainWeekDiv {
+#mainWeekDiv, #needsDiv {
     display: flex;
     justify-content: space-between;
 }
 
-#mainWeekDiv .weekday-div {
+#mainWeekDiv .weekday-div, #needsDiv .weekday-div{
     background-color: lightpink;
     width: 100%;
     margin: 2px;
@@ -13,7 +13,7 @@
     align-items: center;
 } 
 
-#mainWeekDiv .dayName {
+#mainWeekDiv .dayName, #needsDiv .dayName {
     font-weight: 500;
     font-size: 1.2em;
 }
@@ -29,4 +29,15 @@
 
 #mainWeekDiv .shiftDivActive {
     background-color: lightseagreen;
+}
+
+#mainWeekDiv .personDayBlock, #needsDiv .shiftsDayBlock {
+    background-color: lightseagreen;
+    height: 4rem;
+    margin: 2px;
+    /* width: 100%; */
+}
+
+#mainWeekDiv .dailyScheduleContainer, #needsDiv .dailyScheduleContainer {
+    width: 100%;
 }

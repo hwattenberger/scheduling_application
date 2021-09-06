@@ -143,6 +143,13 @@ app.get('/staff', async (req, res) => {
     res.json(staff);
 })
 
+app.get('/staffAvailability', async (req, res) => {
+    const staff = await WeeklyAvailability.find({}).populate('person', 'firstName lastName profilePhoto userRole.name').populate('weekAvailability.shiftAvailability.shiftType');
+    // delete staff.password;
+    // console.log("Staff", staff);
+    res.json(staff);
+})
+
 app.get('/staff/:staffId/available', async (req, res) => {
     const {staffId} = req.params;
     const userAvailable = await WeeklyAvailability.find({person: staffId}).populate('weekAvailability.shiftAvailability.shiftType');
