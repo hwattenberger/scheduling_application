@@ -7,7 +7,7 @@ const session = require('express-session');
 // const flash = require('connect-flash');
 const bodyParser = require("body-parser");
 const cors = require('cors');
-
+const dayjs = require('dayjs');
 
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongo');
@@ -18,7 +18,8 @@ const User = require('./models/user');
 const UserRole = require('./models/userRole');
 const ShiftType = require('./models/shiftType');
 const WeeklyAvailability = require('./models/weeklyAvailability');
-
+const ScheduleShift = require('./models/scheduleShift');
+const ScheduleWeek = require('./models/scheduleWeek');
 
 const authRoutes = require('./routes/auth')
 
@@ -100,9 +101,100 @@ app.get('/shifts', async (req, res) => {
     if (role) shifts = await ShiftType.find({role: role}); 
     else shifts = await ShiftType.find({}).sort({role: 1}).populate({path:'role'});
 
-    console.log("Shifts", shifts)
+    // console.log("Shifts", shifts)
     res.json(shifts);
 })
+
+// app.get('/scheduleShifts', async (req, res) => {
+//     const scheduleShifts = await ScheduleShift.find({})
+
+//     // console.log("scheduleWeek", date);
+    
+//     res.json(scheduleShifts);
+// })
+
+app.get('/scheduleWeek', async (req, res) => {
+    const {date} = req.query;
+    const formattedDate = dayjs(date).format('YYYY-MM-DD')
+    const mondayOfWeek = dayjs(formattedDate).day(1);
+
+    let scheduleWeek = await ScheduleWeek.findOne({firstDayOfWeek: mondayOfWeek}).populate("days.scheduleShifts")
+        .populate("days.scheduleShifts.shift.name")
+        
+
+    console.log("scheduleWeek", date);
+    
+    res.json(scheduleWeek);
+})
+
+app.post('/scheduleWeek', async (req, res) => {
+    const {date} = req.body.body;
+    const formattedDate = dayjs(date).format('YYYY-MM-DD')
+    const mondayOfWeek = dayjs(formattedDate).day(1);
+    const shifts = await ShiftType.find({});
+
+    // console.log("Dates", date, formattedDate, mondayOfWeek)
+
+    const newScheduleWeekObj = {
+        firstDayOfWeek: mondayOfWeek,
+        days: []
+    }
+
+    for (let i = 0; i < 7; i++) {
+        const daysDate = dayjs(mondayOfWeek).add(i,'day');
+        const shiftArr = [];
+
+        for (shift of shifts) {
+            const newShiftForDay = new ScheduleShift({
+                date: daysDate,
+                shift,
+                peopleNeeded: shift.defNum
+            })
+            await newShiftForDay.save();
+            shiftArr.push(newShiftForDay);
+        }
+        // console.log("Day shifts", shiftArr);
+
+        newScheduleWeekObj.days[i] = {
+            date: daysDate,
+            scheduleShifts: [...shiftArr]
+        }
+    }
+
+    const newScheduleWeek = new ScheduleWeek(newScheduleWeekObj)
+    await newScheduleWeek.save();
+
+    console.log("newScheduleWeek", newScheduleWeek);
+    
+    res.json(newScheduleWeek);
+})
+
+// const createShiftsForDay = async (date, shifts) => {
+//     const returnArr = [];
+
+//     await shifts.forEach(async (shift) => {
+//         const newShiftForDay = new ScheduleShift({
+//             date: date,
+//             shift,
+//             peopleNeeded: shift.defNum
+//         })
+//         await newShiftForDay.save();
+//         returnArr.push(newShiftForDay);
+//     })
+//     console.log("ReturnArr", returnArr)
+//     return returnArr;
+// }
+
+// app.post('/scheduleShifts/:shiftId', async (req, res) => {
+//     const {shiftId} = req.params;
+//     const scheduledShifts = req.body.body;
+
+//     // const shiftsForDay = await ScheduleShift.find({});
+
+//     // console.log("shiftsForDay", shiftsForDay);
+    
+//     res.json("");
+// })
 
 app.post('/shifts', async (req, res) => {
     const newShiftTypeInfo = req.body.body;
@@ -144,7 +236,10 @@ app.get('/staff', async (req, res) => {
 })
 
 app.get('/staffAvailability', async (req, res) => {
-    const staff = await WeeklyAvailability.find({}).populate('person', 'firstName lastName profilePhoto userRole.name').populate('weekAvailability.shiftAvailability.shiftType');
+    const staff = await WeeklyAvailability.find({})
+    .populate('person', 'firstName lastName profilePhoto')
+    .populate('person.userRole')
+    .populate('weekAvailability.shiftAvailability.shiftType');
     // delete staff.password;
     // console.log("Staff", staff);
     res.json(staff);

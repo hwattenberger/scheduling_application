@@ -7,6 +7,8 @@ import Staff from "./components/Staff/Staff";
 import StaffMember from "./components/Staff/StaffMember";
 import GeneralSetup from "./components/GeneralSetup";
 import Schedule from "./components/Schedule/Schedule";
+import ScheduleIntro from "./components/Schedule/ScheduleIntro";
+
 
 function App() {
   const [loginUser, setLoginUser] = useState(null);
@@ -16,7 +18,7 @@ function App() {
     <BrowserRouter>
       <div className="App">
         Login User: {userObject && userObject._id}
-        {userObject && <h1> Logged in!</h1>}
+        {/* {userObject && <h1> Logged in!</h1>} */}
         {!userObject && <Login setLoginUser={setLoginUser}/>}
       </div>
       <Switch>
@@ -33,7 +35,7 @@ function App() {
           <GeneralSetup />
         </Route>
         <Route path="/schedule">
-          <Schedule />
+          <ScheduleIntro />
         </Route>
       </Switch>
     </BrowserRouter>
