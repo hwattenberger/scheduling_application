@@ -228,7 +228,38 @@ app.get('/staff', async (req, res) => {
     res.json(staff);
 })
 
-app.get('/staffAvailability', async (req, res) => {
+// app.get('/staffAvailability/:staffId', async (req, res) => {
+//     const {staffId} = req.params;
+//     const firstDate = req.query.date;
+
+//     const test = await WeeklyAvailability.aggregate([{
+//         $lookup: {
+//             from: 'TimeoffRequest',
+//             let: {person: '$person'},
+//             pipeline: [{$match: {
+//                 $expr: {
+//                     $eq: ['$person', '$$person']
+//                 }
+//             }
+
+//             }],
+//             as: 'timeOffPerson'
+//         }
+//     }])
+//     // const shiftsScheduled = await ScheduleShift.aggregate([{$group: {_id: '$date', shifts: {$push: {shift: '$shift', _id:'$_id'}}}},
+//     // {$project: {date: '$_id', shifts: 1, _id: 0}}])
+
+
+
+//     console.log("firstDate", firstDate)
+//     console.log("shiftsScheduled", test)
+
+//     // const weeklyAvailabilityAll = await WeeklyAvailability.find({})
+
+//     res.json(test);
+// })
+
+app.get('/staffAvailabilityTEST', async (req, res) => {
     const {date} = req.query;
     const staff = await WeeklyAvailability.find({})
     .populate('person', 'firstName lastName profilePhoto')
@@ -265,7 +296,7 @@ app.get('/staffAvailability', async (req, res) => {
 })
 
 //remove
-app.get('/staffAvailabilityOLDDD', async (req, res) => {
+app.get('/staffAvailability', async (req, res) => {
     const staff = await WeeklyAvailability.find({})
     .populate('person', 'firstName lastName profilePhoto')
     .populate('person.userRole')

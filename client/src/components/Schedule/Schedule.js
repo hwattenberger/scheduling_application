@@ -126,6 +126,7 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift}) => {
 }
 
 const getPersonDayStatus = (personSched) => {
+    {console.log("personSched", personSched)}
     if (personSched.scheduledShift) return "Scheduled"
     if (personSched.shiftAvail.length > 0) return "Available"
     return "Unavailable"
@@ -189,8 +190,28 @@ const Schedule = ({weeklySchedule, date, staffShift}) => {
             withCredentials: true,
             params: {date: weeklySchedule.firstDayOfWeek}
             })
-            .then(data => { setWeeklyAvailability(data.data);
-                console.log("Availability", data.data)})
+            .then(data => { 
+                const tempWeeklyAvailability = data.data;
+
+                for (let i=0; i<7; i++) {
+                    for (let scheduleShift of weeklySchedule.days[i].scheduleShifts) {
+                        const shiftType = scheduleShift.shift;
+                        for (let peopleAssign of scheduleShift.peopleAssigned) {
+                            const personId = peopleAssign._id || peopleAssign;
+                            tempWeeklyAvailability.forEach((person, personIx) => {
+                                // console.log("Get here?", person.person._id, peopleAssign)
+                                if (person.person._id === personId) {
+                                    tempWeeklyAvailability[personIx].weekAvailability[i].scheduledShift = shiftType;
+                                    // console.log("Testing here", tempWeeklyAvailability)
+                                }
+                            })
+                        }
+                    }
+                }
+
+                setWeeklyAvailability(tempWeeklyAvailability);
+                console.log("Availability", data.data)
+            })
             .catch(e => console.log("Error Staff", e))
     }
     
