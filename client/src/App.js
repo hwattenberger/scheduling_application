@@ -8,7 +8,7 @@ import StaffMember from "./components/Staff/StaffMember";
 import GeneralSetup from "./components/GeneralSetup";
 import Schedule from "./components/Schedule/Schedule";
 import ScheduleIntro from "./components/Schedule/ScheduleIntro";
-
+import UserScheduledShifts from "./components/Schedule/UserScheduledShifts";
 
 function App() {
   const [loginUser, setLoginUser] = useState(null);
@@ -36,6 +36,9 @@ function App() {
         </Route>
         <Route path="/schedule">
           <ScheduleIntro />
+        </Route>
+        <Route path={`/myShifts/:staffId`}>
+          <UserScheduledShifts />
         </Route>
       </Switch>
     </BrowserRouter>

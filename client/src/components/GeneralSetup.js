@@ -91,6 +91,16 @@ const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave, ix}) => {
         setShiftType({ ...shiftType,[e.target.name]:e.target.value });
     }
 
+    const handleInputChangeRole = (e) => {
+        let newRole = "";
+        
+        roles.forEach((role) => {
+            if (e.target.value === role._id) newRole = role
+        })
+
+        setShiftType({ ...shiftType,[e.target.name]:newRole});
+    }
+
     const handleSaveShift = (e) => {
         onShiftSave(shiftTypeInfo._id, ix, shiftType);
     }
@@ -102,6 +112,7 @@ const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave, ix}) => {
     if (shiftType) {
         return (
             <div className="listDiv">
+            {console.log("Shift Types", shiftType)}
                 <span onClick={handleSaveShift}>
                     <Edit />
                 </span>
@@ -109,7 +120,7 @@ const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave, ix}) => {
 
                 <FormControl className={classes.formControl}>
                     <InputLabel id="role-select-label">Role Needed</InputLabel>
-                    <Select labelId="role-select-label" id="demo-simple-select" value={shiftType.role} name="role" onChange={handleInputChange}>
+                    <Select labelId="role-select-label" id="demo-simple-select" value={shiftType.role._id} name="role" onChange={handleInputChangeRole}>
                     <MenuItem value={undefined}>
                         <em>None</em>
                     </MenuItem>

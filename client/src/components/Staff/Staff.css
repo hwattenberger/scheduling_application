@@ -1,7 +1,7 @@
 .staffLine {
     margin: 5px;
     padding: 5px;
-    background-color: lightblue;
+    background-color: var(--main-divs-color);
     display: grid;
     grid-template-columns: 60px 2fr 2fr 2fr 2fr;
 }

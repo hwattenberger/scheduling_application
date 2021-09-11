@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './Schedule.css';
+import Badge from '@material-ui/core/Badge';
 
 
-const DailyNeeds = ({dayIx, schedule}) => {
+const DailyNeeds = ({dayIx, weeklySchedule, shifts}) => {
 
-    const dragStart = (e, shiftsType) => {
-        e.dataTransfer.setData('object', JSON.stringify(shiftsType.shifts[0]));
+    const dragStart = (e, scheduleShift) => {
+        e.dataTransfer.setData('object', JSON.stringify(scheduleShift._id));
         e.dataTransfer.setData('dayIx', dayIx);
-        console.log("Drag Start", dayIx, shiftsType.shifts[0]);
+        console.log("Drag Start", dayIx, scheduleShift._id);
+    }
+
+    const bgColor = (shift) => {
+        const color = shifts[shift].role.color
+        return {backgroundColor: color};
     }
 
     return (
         <div className="dailyNeedsContainer">
-            {schedule[dayIx].shiftsByRole.map((shiftsType) => (
-                <div key={shiftsType.role._id} className="shiftsDayBlock" id={`${dayIx}^${shiftsType.shifts[0].shift.id}`} 
-                  draggable onDragStart={(e) => dragStart(e, shiftsType)}>
-                    <div>{shiftsType.shifts[0].shift.name}</div>
-                    <div>{shiftsType.shifts[0].peopleNeeded}</div>
-                </div>
+            {/* {console.log("Shifts!!", shifts)} */}
+            {weeklySchedule.days[dayIx].scheduleShifts.map((scheduleShift) => (
+                <Badge key={scheduleShift._id} badgeContent={scheduleShift.peopleNeeded - scheduleShift.peopleAssigned.length} color="primary">
+                    <div className="shiftsDayBlock" id={scheduleShift._id}
+                    draggable onDragStart={(e) => dragStart(e, scheduleShift)} style={bgColor(scheduleShift.shift)}>
+                        {/* <Badge badgeContent={scheduleShift.peopleNeeded} color="primary"> */}
+                            <div className="scheduleShiftName">{shifts[scheduleShift.shift].name}</div>
+                        {/* </Badge> */}
+                        {/* <div>Needed: {scheduleShift.peopleNeeded}</div> */}
+                    </div>
+                </Badge>
             ))}
         </div>
     )
@@ -26,22 +37,24 @@ const DailyNeeds = ({dayIx, schedule}) => {
 
 const ColumnContentNeeds = ({columnIx, weeklySchedule, shifts}) => {
     // return null;
-    if(shifts === null || weeklySchedule === null) return null;
-    // if (columnIx === 0) return (<NeedsHeader weeklySchedule={weeklySchedule} shifts={shifts}/>)
-    // return (<DailyNeeds dayIx={columnIx-1} weeklySchedule={weeklySchedule}/>)
+    if(!shifts || !weeklySchedule) return null;
+    if (columnIx === 0) return (<NeedsHeader weeklySchedule={weeklySchedule} shifts={shifts}/>)
+    return (<DailyNeeds dayIx={columnIx-1} weeklySchedule={weeklySchedule} shifts={shifts}/>)
     return null;
 }
 
 
 const NeedsHeader = ({weeklySchedule, shifts}) => {
+    // console.log("Needs Header", shifts)
+    // console.log("Header schedule", weeklySchedule.days[0].scheduleShifts)
     return (
         <div className="dailyNeedsContainer">
-            {weeklySchedule[0].scheduleShifts.map((scheduleShift) => (
+            {/* {weeklySchedule.days[0].scheduleShifts.map((scheduleShift) => (
 
                 <div key={shifts[scheduleShift.shift]._id} className="shiftsDayBlock">
-                    {shifts[scheduleShift.shift]._id}
+                    {shifts[scheduleShift.shift].name}
                 </div>
-            ))}
+            ))} */}
         </div>
     )
 }

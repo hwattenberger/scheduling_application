@@ -20,7 +20,9 @@ const FadeMenu = ({availShifts, setShift}) => {
       setAnchorEl(null);
       const { myValue } = event.currentTarget.dataset;
       console.log(event.target.value) // --> 123
-      setShift(event.target.value)
+      if (event.target.value !== undefined) {
+        setShift(event.target.value);
+      }
     };
   
     return (
@@ -46,16 +48,24 @@ const FadeMenu = ({availShifts, setShift}) => {
     );
 }
 
-const ColumnContent = ({columnIx, availability}) => {
+const ColumnContentSchedule = ({columnIx, availability, staffShift}) => {
     if (columnIx === 0) return (<ScheduleHeader availability={availability}/>)
-    return (<DailyStaffSchedule dayIx={columnIx-1} availability={availability}/>)
+    // return null;
+    return (<DailyStaffSchedule dayIx={columnIx-1} availability={availability} staffShift={staffShift}/>)
 }
 
+
 const ScheduleHeader = ({availability}) => {
+    const bgColor = (personAvailability) => {
+    //     const color = shifts[shift].role.color
+    //     return {backgroundColor: color};
+    return null;
+    }
+
     return (
         <div className="dailyScheduleContainer">
             {availability.map((personAvailability) => (
-                <div key={personAvailability.person._id} className="personDayBlock">
+                <div key={personAvailability.person._id} className="personDayBlock" style={bgColor(personAvailability)}>
                     <div>{personAvailability.person.firstName} {personAvailability.person.lastName}</div>
                     {/* <div>{personAvailability.person.userRole.name}</div> */}
                 </div>
@@ -64,7 +74,7 @@ const ScheduleHeader = ({availability}) => {
     )
 }
 
-const DailyStaffSchedule = ({dayIx, availability}) => {
+const DailyStaffSchedule = ({dayIx, availability, staffShift}) => {
     const [daySchedule, setDaySchedule] = useState([]);
 
     useEffect(() => {
@@ -84,7 +94,13 @@ const DailyStaffSchedule = ({dayIx, availability}) => {
         const shift = newSchedule[personIx].shiftAvail[availShiftIx];
         newSchedule[personIx].scheduledShift = shift;
         setDaySchedule(newSchedule);
-        console.log("Hi", availShiftIx, personIx)
+        console.log("Hi", daySchedule)
+        console.log("Person", newSchedule[personIx].person)
+        console.log("Shift Type", shift.shiftType)
+        const person = newSchedule[personIx].person;
+        const shiftTypeId = shift.shiftType._id;
+
+        staffShift(dayIx, person, shiftTypeId);
     }
 
     function getPersonDayClassName(personSched) {
@@ -125,7 +141,7 @@ const DailySchedulePerson = ({personSched, setShift}) => {
     )
     if (status === "Available") return (
         <>
-        < FadeMenu availShifts={personSched.shiftAvail} setShift={setShift}/>
+        <FadeMenu availShifts={personSched.shiftAvail} setShift={setShift}/>
         </>
     )
     return (
@@ -135,7 +151,7 @@ const DailySchedulePerson = ({personSched, setShift}) => {
     );
 }
 
-const Schedule = ({weeklySchedule, date}) => {
+const Schedule = ({weeklySchedule, date, staffShift}) => {
     const week = [".", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const [shifts, setShifts] = useState();
     const [availability, setWeeklyAvailability] = useState([]);
@@ -155,7 +171,7 @@ const Schedule = ({weeklySchedule, date}) => {
     // }, [shifts]);
 
     function pullShifts() {
-        axios.get('http://localhost:5000/shifts', {withCredentials: true})
+        axios.get('http://localhost:5000/shifts', { withCredentials: true })
             .then(data =>  {
                 const tempShifts = data.data;
                 const tempShiftObj = {};
@@ -169,12 +185,14 @@ const Schedule = ({weeklySchedule, date}) => {
     }
 
     function pullWeeklyAvailability() {
-        axios.get('http://localhost:5000/staffAvailability', {withCredentials: true})
+        axios.get('http://localhost:5000/staffAvailability', {
+            withCredentials: true,
+            params: {date: weeklySchedule.firstDayOfWeek}
+            })
             .then(data => { setWeeklyAvailability(data.data);
                 console.log("Availability", data.data)})
             .catch(e => console.log("Error Staff", e))
     }
-
     
     return (
         <div id="mainSchedule">
@@ -194,141 +212,7 @@ const Schedule = ({weeklySchedule, date}) => {
                 {week.map((day, columnIx) => (
                     <div key={columnIx} className="weekday-div">
                         <span className="dayName">{day}</span>
-                        {/* <ColumnContent columnIx={columnIx} availability={availability}/> */}
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-const ScheduleOld = (props) => {
-    const week = ["Staff", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const [shifts, setShifts] = useState([]);
-    // const [roles, getRoles] = useState({});
-    const [schedule, setSchedule] = useState([]);
-    const [availability, setWeeklyAvailability] = useState([]);
-    // const [firstDayOfWeek, getFirstDayOfWeek] = useState();
-    const [date, setDate] = useState();
-
-    useEffect(() => {
-        pullShifts();
-        pullWeeklyAvailability();
-        pullSchedule();
-    }, []);
-
-    useEffect(() => {
-        console.log("Schedule Use Effect", schedule)
-        if (schedule.length === 0 && shifts.length > 0) {
-            setupNewWeekSchedule();
-        }
-    }, [shifts]);
-
-    //Do this after pulling shifts
-    function setupNewWeekSchedule() {
-        const tempShiftObjectMap = {};
-
-        const shiftsArray = [];
-        shifts.forEach((shift) => {
-            const shiftRole = shift.role._id;
-            if (tempShiftObjectMap[shiftRole] === undefined) {
-                tempShiftObjectMap[shiftRole] = shiftsArray.length;
-                shiftsArray.push({
-                    role: shift.role,
-                    shifts: [{
-                        shift: shift,
-                        peopleAssigned: [],
-                        peopleNeeded: shift.defNum
-                    }]
-                });
-            } else {
-                const arrIx = tempShiftObjectMap[shiftRole]
-                shiftsArray[arrIx].shifts.push({
-                    shift: shift,
-                    peopleAssigned: [],
-                    peopleNeeded: shift.defNum
-                })
-            }
-
-        })
-
-        const tempSchedule = new Array(7).fill().map((day, ix) => {
-            let dayDate = new Date(date);
-            dayDate.setDate(date.getDate() + ix);
-
-            const dayInfo = {
-                date: dayDate,
-                shiftsByRole: [...shiftsArray]
-            };
-            return dayInfo;
-        })
-
-        console.log("Temp Sched", tempSchedule)
-
-        setSchedule(tempSchedule);
-    }
-
-    function pullSchedule() {
-        axios.get('http://localhost:5000/scheduleShifts', {
-            withCredentials: true,
-            params: {date: date}
-            })
-            .then(data =>  {
-                // setShifts([...data.data])
-                console.log("Data", data.data)
-                // console.log("Schedule", schedule)
-            })
-            .catch(e => console.log("Error Pulling Schedule", e))
-    }
-
-    function pullShifts() {
-        axios.get('http://localhost:5000/shifts', {withCredentials: true})
-            .then(data =>  {
-                setShifts([...data.data])
-                console.log("Shifts", data.data)
-                console.log("Schedule", schedule)
-            })
-            .catch(e => console.log("Error Staff", e))
-    }
-
-    function pullWeeklyAvailability() {
-        axios.get('http://localhost:5000/staffAvailability', {withCredentials: true})
-            .then(data => { setWeeklyAvailability(data.data);
-                console.log("Availability", data.data)})
-            .catch(e => console.log("Error Staff", e))
-    }
-
-    
-    return (
-        <div id="mainSchedule">
-            <h2>Needs</h2>
-            <div id="needsDiv">
-                {week.map((day, columnIx) => (
-                    <div key={columnIx} className="weekday-div">
-                        <span className="dayName">{day}</span>
-                        <ColumnContentNeeds columnIx={columnIx} schedule={schedule}/>
-                    </div>
-                ))}
-            </div>
-
-
-            <h2>Schedule</h2>
-            <div id="mainWeekDiv">
-                {week.map((day, columnIx) => (
-                    <div key={columnIx} className="weekday-div">
-                        <span className="dayName">{day}</span>
-                        <ColumnContent columnIx={columnIx} availability={availability}/>
+                        <ColumnContentSchedule columnIx={columnIx} availability={availability} staffShift={staffShift}/>
                     </div>
                 ))}
             </div>
@@ -337,3 +221,137 @@ const ScheduleOld = (props) => {
 }
 
 export default Schedule;
+
+
+
+
+
+
+
+
+
+
+// const ScheduleOld = (props) => {
+//     const week = ["Staff", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+//     const [shifts, setShifts] = useState([]);
+//     // const [roles, getRoles] = useState({});
+//     const [schedule, setSchedule] = useState([]);
+//     const [availability, setWeeklyAvailability] = useState([]);
+//     // const [firstDayOfWeek, getFirstDayOfWeek] = useState();
+//     const [date, setDate] = useState();
+
+//     useEffect(() => {
+//         pullShifts();
+//         pullWeeklyAvailability();
+//         pullSchedule();
+//     }, []);
+
+//     useEffect(() => {
+//         console.log("Schedule Use Effect", schedule)
+//         if (schedule.length === 0 && shifts.length > 0) {
+//             setupNewWeekSchedule();
+//         }
+//     }, [shifts]);
+
+//     //Do this after pulling shifts
+//     function setupNewWeekSchedule() {
+//         const tempShiftObjectMap = {};
+
+//         const shiftsArray = [];
+//         shifts.forEach((shift) => {
+//             const shiftRole = shift.role._id;
+//             if (tempShiftObjectMap[shiftRole] === undefined) {
+//                 tempShiftObjectMap[shiftRole] = shiftsArray.length;
+//                 shiftsArray.push({
+//                     role: shift.role,
+//                     shifts: [{
+//                         shift: shift,
+//                         peopleAssigned: [],
+//                         peopleNeeded: shift.defNum
+//                     }]
+//                 });
+//             } else {
+//                 const arrIx = tempShiftObjectMap[shiftRole]
+//                 shiftsArray[arrIx].shifts.push({
+//                     shift: shift,
+//                     peopleAssigned: [],
+//                     peopleNeeded: shift.defNum
+//                 })
+//             }
+
+//         })
+
+//         const tempSchedule = new Array(7).fill().map((day, ix) => {
+//             let dayDate = new Date(date);
+//             dayDate.setDate(date.getDate() + ix);
+
+//             const dayInfo = {
+//                 date: dayDate,
+//                 shiftsByRole: [...shiftsArray]
+//             };
+//             return dayInfo;
+//         })
+
+//         console.log("Temp Sched", tempSchedule)
+
+//         setSchedule(tempSchedule);
+//     }
+
+//     function pullSchedule() {
+//         axios.get('http://localhost:5000/scheduleShifts', {
+//             withCredentials: true,
+//             params: {date: date}
+//             })
+//             .then(data =>  {
+//                 // setShifts([...data.data])
+//                 console.log("Data", data.data)
+//                 // console.log("Schedule", schedule)
+//             })
+//             .catch(e => console.log("Error Pulling Schedule", e))
+//     }
+
+//     function pullShifts() {
+//         axios.get('http://localhost:5000/shifts', {withCredentials: true})
+//             .then(data =>  {
+//                 setShifts([...data.data])
+//                 console.log("Shifts", data.data)
+//                 console.log("Schedule", schedule)
+//             })
+//             .catch(e => console.log("Error Staff", e))
+//     }
+
+//     function pullWeeklyAvailability() {
+//         axios.get('http://localhost:5000/staffAvailability', {withCredentials: true})
+//             .then(data => { setWeeklyAvailability(data.data);
+//                 console.log("Availability", data.data)})
+//             .catch(e => console.log("Error Staff", e))
+//     }
+
+    
+//     return (
+//         <div id="mainSchedule">
+//             <h2>Needs</h2>
+//             <div id="needsDiv">
+//                 {week.map((day, columnIx) => (
+//                     <div key={columnIx} className="weekday-div">
+//                         <span className="dayName">{day}</span>
+//                         <ColumnContentNeeds columnIx={columnIx} schedule={schedule}/>
+//                     </div>
+//                 ))}
+//             </div>
+
+
+//             <h2>Schedule</h2>
+//             <div id="mainWeekDiv">
+//                 {week.map((day, columnIx) => (
+//                     <div key={columnIx} className="weekday-div">
+//                         <span className="dayName">{day}</span>
+//                         <ColumnContent columnIx={columnIx} availability={availability}/>
+//                     </div>
+//                 ))}
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default Schedule;

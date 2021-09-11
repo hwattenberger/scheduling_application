@@ -7,7 +7,6 @@ function DatePickerSchedule({date, setDate}) {
         setDate(dayjs(e.target.value).format())
     }
 
-    console.log("Here", date)
     return (
       <form noValidate>
         <span className="weekOfSpan">For week of:  </span>

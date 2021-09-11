@@ -1,9 +1,13 @@
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import StaffWeeklyAvailability from "./StaffWeeklyAvailability"
+import StaffWeeklyAvailability from "./StaffWeeklyAvailability";
+import StaffRequestOff from "./StaffRequestOff";
+
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+
+import './StaffWeeklyAvailability.css';
 
 const noUser = {
     email: "",
@@ -65,7 +69,7 @@ const StaffMember = (props) => {
     if(!user) return (<h2>Loading</h2>);
 
     return (
-        <div>
+        <div id="staffMemberInfoPage">
             <h2>Staff Member Setup</h2>
             {/* {JSON.stringify(shifts)} */}
             <form onSubmit={handleSubmit}>
@@ -93,6 +97,7 @@ const StaffMember = (props) => {
                 <Button variant="outlined" type="submit">Update</Button>
             </form>
             {shifts && <StaffWeeklyAvailability shifts={shifts}/>}
+            <StaffRequestOff />
         </div>
         );
 }

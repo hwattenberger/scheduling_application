@@ -2,13 +2,14 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Button from '@material-ui/core/Button'
-import './StaffWeeklyAvailability.css';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 const StaffWeeklyAvailability = ({shifts}) => {
     const [userWeeklyAvail, setUserWeeklyAvail] = useState([]);
     const week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const { staffId } = useParams();
+    const [showComplete, setShowComplete] = useState(false);
 
     useEffect(() => {
         if (shifts.length) getWeeklyAvailability();
@@ -59,7 +60,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
             withCredentials: true,
             body: userWeeklyAvail
         })
-            .then(data => console.log("Put Weekly", data.data))
+            .then(data => setShowComplete(true))
             .catch(e => console.log("Error - Couldn't get weekly schedule", e))
     }
 
@@ -79,6 +80,10 @@ const StaffWeeklyAvailability = ({shifts}) => {
         })
         // console.log(weeklyShifts)
         setUserWeeklyAvail(weeklyShifts);
+    }
+
+    function handleSnackClose() {
+        setShowComplete(false);
     }
 
     const handleShiftClick = (ix, dayShiftIx) => {
@@ -107,7 +112,12 @@ const StaffWeeklyAvailability = ({shifts}) => {
                 ))}
             </div>
             <Button variant="outlined" onClick={putWeeklyAvailability}>Save Shifts</Button>
-            {/* <button onClick={putWeeklyAvailability}>Save Shifts</button> */}
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={showComplete}
+                onClose={handleSnackClose}
+                message="Weekly Availability Saved"
+                key={'top' + 'center'} />
         </div>
     )
 }

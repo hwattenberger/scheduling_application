@@ -4,7 +4,7 @@
 }
 
 #weekDiv .weekday-div {
-    background-color: lightpink;
+    background-color: var(--main-divs-color);
     width: 100%;
     margin: 2px;
     padding: 2px;
@@ -19,7 +19,7 @@
 }
 
 #weekDiv .shiftDiv {
-    background-color: lightsalmon;
+    background-color: var(--unavailable-color);
     width: 100%;
     margin: 2px;
     padding: 2px;
@@ -28,5 +28,30 @@
 }
 
 #weekDiv .shiftDivActive {
-    background-color: lightseagreen;
+    background-color: var(--scheduled-color);
+}
+
+#staffMemberInfoPage button {
+    margin-top: 5px;
+}
+
+#staffTimeoff button {
+    margin-top: 0px;
+    margin-left: 5px;
+}
+
+#upcomingTimeOffDiv div {
+    display: flex;
+    margin: 2px;
+}
+
+#upcomingTimeOffDiv span {
+    transition: transform ease .4s;
+    transition: color ease .2s;
+}
+
+#upcomingTimeOffDiv span:hover {
+    transform: translateY(-2px);
+    color: rgb(0, 0, 0, .75);
+    cursor: pointer;
 }

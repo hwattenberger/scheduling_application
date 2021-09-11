@@ -10,6 +10,7 @@ const ScheduleIntro = (props) => {
     const [date, setDate] = useState(new Date());
     const [weeklySchedule, setWeeklySchedule] = useState({});
     const [noSchedule, setNoSchedule] = useState(null);
+    const [updatedScheduleShifts, setUpdatedScheduleShifts] = useState([]);
 
     function formatDatetoJustDate() {
         const formattedDate = dayjs(date).format('YYYY-MM-DD');
@@ -50,6 +51,33 @@ const ScheduleIntro = (props) => {
             .catch(e => console.log("Error Creating a Weekly Schedule", e))
     }
 
+    function staffShift(dayIx, person, shiftType) {
+        const newSched = {...weeklySchedule};
+        newSched.days[dayIx].scheduleShifts.forEach((scheduleShift) => {
+            console.log("For Each", shiftType, scheduleShift.shift)
+            if (shiftType === scheduleShift.shift) {
+                scheduleShift.peopleAssigned.push(person);
+                setUpdatedScheduleShifts([...updatedScheduleShifts, scheduleShift]);
+            }
+        })
+        console.log("New Schedule", newSched);
+        setWeeklySchedule(newSched);
+    }
+
+    function saveSchedule() {
+        console.log("Safe", updatedScheduleShifts)
+        updatedScheduleShifts.forEach((scheduleShift) => {
+            axios.put(`http://localhost:5000/scheduleShift/${scheduleShift._id}`, {
+                withCredentials: true,
+                body: scheduleShift
+            })
+            .then(result => {
+                console.log("Saved successfully");
+                setUpdatedScheduleShifts([]);
+            })
+        })
+    }
+
     return (
         <div>
             <h1 className="scheduleH1">Schedule</h1>
@@ -57,7 +85,8 @@ const ScheduleIntro = (props) => {
                 <DatePickerSchedule date={formatDatetoJustDate()} setDate={setDate}/>
                 {noSchedule === true && <button onClick={onClickCreateSchedule}>Create Schedule</button>}
             </div>
-            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date}/>}
+            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift}/>}
+            {updatedScheduleShifts.length > 0 && <button onClick={saveSchedule}>Save Changes</button>}
         </div>
     )
 }
