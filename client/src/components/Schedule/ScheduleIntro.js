@@ -18,6 +18,7 @@ const ScheduleIntro = (props) => {
     }
 
     useEffect(() => {
+        setNoSchedule(null);
         pullWeeklySchedule();
     }, [date]);
 

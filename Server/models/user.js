@@ -24,7 +24,8 @@ const UserSchema = new Schema({
         ref: 'UserRole'
     },
     active: Boolean,
-    hourlyPay: Number
+    hourlyPay: Number,
+    isAdmin: Boolean
 });
 
 UserSchema.statics.addGoogleUser = function(newUser) {

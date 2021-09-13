@@ -18,8 +18,9 @@ const StaffWeeklyAvailability = ({shifts}) => {
     function getWeeklyAvailability() {
         axios.get(`http://localhost:5000/staff/${staffId}/available`, { withCredentials: true })
             .then(data => {
-                if (data.data[0]) {
-                    const weeklyAvailabilityQuery = data.data[0].weekAvailability;
+                const weeklyAvailabilityQuery = data.data
+                if (weeklyAvailabilityQuery.length > 0) {
+                    console.log("Data data", weeklyAvailabilityQuery)
                     
                     const savedShifts = weeklyAvailabilityQuery[0].shiftAvailability.map((shift) => shift.shiftType._id);
                     const shiftsIds = shifts.map((shift) => shift._id);
@@ -30,7 +31,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
                             weeklyAvailabilityQuery.forEach((day) => {
                                 const shiftInfo = {
                                     shiftType: shift,
-                                    available: false
+                                    isAvailable: false
                                 };
                                 day.shiftAvailability.push(shiftInfo);
                             })
@@ -72,7 +73,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
                 shiftAvailability: shifts.map((shift) => {
                     const shiftInfo = {
                         shiftType: shift,
-                        available: false
+                        isAvailable: false
                     };
                     return shiftInfo;
                 })
@@ -87,11 +88,10 @@ const StaffWeeklyAvailability = ({shifts}) => {
     }
 
     const handleShiftClick = (ix, dayShiftIx) => {
-        console.log("Yay", ix);
         const TempUserWeeklyAvail = [...userWeeklyAvail]
         const TempShift = userWeeklyAvail[ix].shiftAvailability[dayShiftIx];
-        const currentAvail = TempShift.available
-        TempUserWeeklyAvail[ix].shiftAvailability[dayShiftIx] = {...TempShift, available: !currentAvail}
+        const currentAvail = TempShift.isAvailable
+        TempUserWeeklyAvail[ix].shiftAvailability[dayShiftIx] = {...TempShift, isAvailable: !currentAvail}
         setUserWeeklyAvail(TempUserWeeklyAvail);
     }
 
@@ -103,7 +103,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
                     <div key={ix} className="weekday-div">
                         <span className="dayName">{week[ix]}</span>
                         { day.shiftAvailability.map((dayShift, dayShiftIx) => (
-                            <div className={`shiftDiv ${dayShift.available ? "shiftDivActive" : "shiftDivInactive"}`} key={dayShift.shiftType._id} onClick={() => handleShiftClick(ix, dayShiftIx)}>
+                            <div className={`shiftDiv ${dayShift.isAvailable ? "shiftDivActive" : "shiftDivInactive"}`} key={dayShift.shiftType._id} onClick={() => handleShiftClick(ix, dayShiftIx)}>
                                 <div>{dayShift.shiftType.name}</div>
                                 <div>{dayShift.shiftType.startTime} - {dayShift.shiftType.endTime}</div>
                             </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
-import Register from "./Register"
-
+import { Button, TextField } from '@material-ui/core'
+import './LoginRegister.css'
 
 async function loginUser(credentials) {
     return await axios.post('http://localhost:5000/auth/login', {
@@ -37,25 +37,26 @@ const Login = ({setLoginUser}) => {
 
     return (
         <div id="loginPage">
-            <div>
-                <h2>Login:</h2>
-                <div onClick={googleLogin}>Sign in with Google</div>
-                <span>-or Sign in with Email</span>
+            <div id="loginDiv">
+                <div id="loginDiv-Header">
+                    <h2>Login</h2>
+                    <div>
+                        <Button variant="outlined" onClick={googleLogin}>Sign in with Google</Button>
+                    </div>
+                    -or- Sign in with Email
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        Email:
-                        <input type="text" name="email" onChange={e => setEmail(e.target.value)}/>
-                    </label>
-                    <label>
-                        Password:
-                        <input type="password" name="password" onChange={e => setPassword(e.target.value)}/>
-                    </label>
-                    <input type="submit" value="Login" />
+                    <div>
+                        <TextField name="email" label="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                    </div>
+                    <div>
+                        <TextField name="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    </div>
+                    <Button variant="outlined" type="submit">Login</Button>
                 </form>
+            Not registered yet?  <a href="/register">Create an Account</a>
             </div>
 
-            Not registered yet?  Create an Account
-            <Register setLoginUser={setLoginUser}/>
         </div>
     );
 }

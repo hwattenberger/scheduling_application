@@ -18,7 +18,7 @@ router.route('/google/callback')
 router.route('/register')
   .post(auths.localSignup);
 
-  router.route('/getUser')
+router.route('/getUser')
   .get(auths.getUser);
 
 module.exports = router;

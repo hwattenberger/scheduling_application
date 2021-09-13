@@ -1,0 +1,46 @@
+#mainpage {
+    height: 90vh;
+    display: flex;
+    margin: 0px 50px;
+}
+
+#mainpage h1 {
+    font-size: 50px;
+}
+
+#mainpage #leftdiv {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#mainpage a {
+    text-decoration: none;
+}
+
+#mainpage #rightdiv {
+    display: flex;
+    flex-flow: row nowrap;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    /* flex-shrink: 2; */
+}
+
+#mainpage #rightdiv img {
+    height: 100%;
+    width: 100%;
+    object-fit: scale-down;
+}
+
+#mainpage #bottomdiv {
+    position:absolute;
+    bottom:0;
+}
+
+#mainpage #bottomdiv a {
+    text-align: center;
+    color: inherit;
+    font-size: 12px;
+}

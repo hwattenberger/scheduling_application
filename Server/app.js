@@ -17,10 +17,10 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const User = require('./models/user');
 const UserRole = require('./models/userRole');
 const ShiftType = require('./models/shiftType');
-const WeeklyAvailability = require('./models/weeklyAvailability');
 const ScheduleShift = require('./models/scheduleShift');
 const ScheduleWeek = require('./models/scheduleWeek');
 const TimeoffRequest = require('./models/timeoffRequest');
+const Availability = require('./models/availability');
 
 const authRoutes = require('./routes/auth')
 
@@ -109,13 +109,13 @@ app.get('/shifts', async (req, res) => {
 app.get('/scheduleWeek', async (req, res) => {
     const {date} = req.query;
     const formattedDate = dayjs(date).format('YYYY-MM-DD')
-    const mondayOfWeek = dayjs(formattedDate).day(1);
+    const sundayOfWeek = dayjs(formattedDate).day(0);
 
-    const scheduleWeek = await ScheduleWeek.findOne({firstDayOfWeek: mondayOfWeek}).populate("days.scheduleShifts")
+    const scheduleWeek = await ScheduleWeek.findOne({firstDayOfWeek: sundayOfWeek}).populate("days.scheduleShifts")
         .populate("days.scheduleShifts.shift.name")
         
 
-    console.log("scheduleWeek", date);
+    console.log("scheduleWeek", date, sundayOfWeek);
     
     res.json(scheduleWeek);
 })
@@ -123,18 +123,18 @@ app.get('/scheduleWeek', async (req, res) => {
 app.post('/scheduleWeek', async (req, res) => {
     const {date} = req.body.body;
     const formattedDate = dayjs(date).format('YYYY-MM-DD')
-    const mondayOfWeek = dayjs(formattedDate).day(1);
+    const sundayOfWeek = dayjs(formattedDate).day(0);
     const shifts = await ShiftType.find({});
 
-    // console.log("Dates", date, formattedDate, mondayOfWeek)
+    // console.log("Dates", date, formattedDate, sundayOfWeek)
 
     const newScheduleWeekObj = {
-        firstDayOfWeek: mondayOfWeek,
+        firstDayOfWeek: sundayOfWeek,
         days: []
     }
 
     for (let i = 0; i < 7; i++) {
-        const daysDate = dayjs(mondayOfWeek).add(i,'day');
+        const daysDate = dayjs(sundayOfWeek).add(i,'day');
         const shiftArr = [];
 
         for (shift of shifts) {
@@ -259,51 +259,160 @@ app.get('/staff', async (req, res) => {
 //     res.json(test);
 // })
 
-app.get('/staffAvailabilityTEST', async (req, res) => {
+// app.get('/staffAvailabilityTEST', async (req, res) => {
+//     const {date} = req.query;
+//     const staff = await WeeklyAvailability.find({})
+//     .populate('person', 'firstName lastName profilePhoto')
+//     .populate('person.userRole')
+//     .populate('weekAvailability.shiftAvailability.shiftType');
+
+//     //Get information about scheduled shifts
+//     const scheduleWeek = await ScheduleWeek.findOne({firstDayOfWeek: date}).populate("days.scheduleShifts")
+    
+//     for (let i=0; i<7; i++) {
+//         for (let scheduleShift of scheduleWeek.days[i].scheduleShifts) {
+//             const shiftType = scheduleShift.shift;
+//             for (let peopleAssign of scheduleShift.peopleAssigned) {
+//                 const personId = peopleAssign._id;
+//                 staff.forEach((person, personIx) => {
+//                     if (person.person._id.equals(personId)) {
+//                         const newStaffAvailability = {...staff[personIx].weekAvailability[i]};
+//                         newStaffAvailability.scheduledShift = shiftType;
+//                         console.log("Match", newStaffAvailability)
+//                         staff[personIx].weekAvailability[i] = newStaffAvailability;
+//                         console.log("Staff2", staff[personIx].weekAvailability[i]);
+//                     }
+//                 })
+//             }
+//         }
+//     }
+
+//     //Set scheduled information in staff before sending back to client
+    
+
+//     console.log("Staff", staff);
+//     // console.log("Schedule Week", scheduleWeek)
+//     res.json(staff);
+// })
+
+// app.get('/staffAvailability', async (req, res) => {
+//     const staff = await Availability.find({})
+//     .populate('person', 'firstName lastName profilePhoto')
+//     .populate('person.userRole')
+//     .populate('shiftAvailability.shiftType');
+//     // delete staff.password;
+//     // console.log("Staff", staff);
+//     res.json(staff);
+// })
+
+// app.get('/staffAvailabilityDateOld', async (req, res) => {
+//     const {date} = req.query;
+//     const newDate = new Date(date);
+
+//     const getWeekAvailability = await Availability.aggregate([{
+//         $lookup: {
+//             from: 'scheduleshifts',
+//             let: {dayofweek: '$dayOfWeek', person: '$person'},
+//             pipeline: [{$match: {
+//                 $expr: {
+//                     $and: [
+//                         { $in: ['$$person', '$peopleAssigned'] },
+//                         { $eq: [{ $add: [ {$multiply: ['$$dayofweek' , 24 * 60 * 60000]}, newDate]}, '$date']}
+//                     ]
+//                 }
+//             }}],
+//             as: 'shiftAssigned'
+//         }
+//     },{ 
+//         $sort : {_id: 1}
+//     }])
+
+//     console.log("getWeekAvailability", getWeekAvailability)
+
+//     res.json(getWeekAvailability);
+// })
+
+app.get('/staffAvailabilityDate', async (req, res) => {
     const {date} = req.query;
-    const staff = await WeeklyAvailability.find({})
-    .populate('person', 'firstName lastName profilePhoto')
-    .populate('person.userRole')
-    .populate('weekAvailability.shiftAvailability.shiftType');
+    const newDate = new Date(date);
 
-    //Get information about scheduled shifts
-    const scheduleWeek = await ScheduleWeek.findOne({firstDayOfWeek: date}).populate("days.scheduleShifts")
-    
-    for (let i=0; i<7; i++) {
-        for (let scheduleShift of scheduleWeek.days[i].scheduleShifts) {
-            const shiftType = scheduleShift.shift;
-            for (let peopleAssign of scheduleShift.peopleAssigned) {
-                const personId = peopleAssign._id;
-                staff.forEach((person, personIx) => {
-                    if (person.person._id.equals(personId)) {
-                        const newStaffAvailability = {...staff[personIx].weekAvailability[i]};
-                        newStaffAvailability.scheduledShift = shiftType;
-                        console.log("Match", newStaffAvailability)
-                        staff[personIx].weekAvailability[i] = newStaffAvailability;
-                        console.log("Staff2", staff[personIx].weekAvailability[i]);
-                    }
-                })
-            }
+    const getWeekAvailability = await Availability.aggregate([{
+        $lookup: {
+            from: 'timeoffrequests',
+            let: {dayofweek: '$dayOfWeek', person: '$person'},
+            pipeline: [{$match: {
+                $expr: {
+                    $and: [
+                        { $eq: ['$person', '$$person'] },
+                        { $eq: [{ $add: [ {$multiply: ['$$dayofweek' , 24 * 60 * 60000]}, newDate]}, '$day']}
+                    ]
+                }
+            }}],
+            as: 'timeoff'
         }
-    }
+    },{
+        $lookup: {
+            from: 'scheduleshifts',
+            let: {dayofweek: '$dayOfWeek', person: '$person'},
+            pipeline: [{$match: {
+                $expr: {
+                    $and: [
+                        { $in: ['$$person', '$peopleAssigned'] },
+                        { $eq: [{ $add: [ {$multiply: ['$$dayofweek' , 24 * 60 * 60000]}, newDate]}, '$date']}
+                    ]
+                }
+            }}],
+            as: 'scheduledShift'
+        }
+    },{ 
+        $lookup: {
+            from: "users",
+            localField: "person",
+            foreignField: "_id",
+            as: "person"
+        }
+    },{
+        $unwind: '$person'
+    },{ 
+        $lookup: {
+            from: "userroles",
+            localField: "person.userRole",
+            foreignField: "_id",
+            as: "person.userRole"
+        }
+    },{
+        $unwind: '$person.userRole'
+    },{
+        $group: {
+            _id: '$dayOfWeek',
+            peopleAvailability: {
+                $push: {
+                    person: '$person',
+                    shiftAvailability: '$shiftAvailability',
+                    timeoff: '$timeoff',
+                    scheduledShift: '$scheduledShift'
+                }
+            }
+      }
+    },{
+        "$project": {
+            "peopleAvailability.person.firstName": 1,
+            "peopleAvailability.person.lastName": 1,
+            "peopleAvailability.person._id": 1,
+            "peopleAvailability.person.userRole": 1,
+            "peopleAvailability.shiftAvailability.isAvailable": 1,
+            "peopleAvailability.timeoff._id": 1,
+            "peopleAvailability.shiftAvailability.shiftType": 1,
+            "peopleAvailability.shiftAvailability.shiftTypes": 1,
+            "peopleAvailability.scheduledShift": 1
+        }
+    },{ 
+        $sort : {_id: 1}
+    }])
 
-    //Set scheduled information in staff before sending back to client
-    
+    console.log("getWeekAvailability", getWeekAvailability)
 
-    console.log("Staff", staff);
-    // console.log("Schedule Week", scheduleWeek)
-    res.json(staff);
-})
-
-//remove
-app.get('/staffAvailability', async (req, res) => {
-    const staff = await WeeklyAvailability.find({})
-    .populate('person', 'firstName lastName profilePhoto')
-    .populate('person.userRole')
-    .populate('weekAvailability.shiftAvailability.shiftType');
-    // delete staff.password;
-    // console.log("Staff", staff);
-    res.json(staff);
+    res.json(getWeekAvailability);
 })
 
 app.get('/staff/:staffId/upcomingShifts', async (req, res) => {
@@ -319,7 +428,9 @@ app.get('/staff/:staffId/upcomingShifts', async (req, res) => {
 
 app.get('/staff/:staffId/available', async (req, res) => {
     const {staffId} = req.params;
-    const userAvailable = await WeeklyAvailability.find({person: staffId}).populate('weekAvailability.shiftAvailability.shiftType');
+    const userAvailable = await Availability.find({person: staffId})
+        .sort({dayOfWeek: 1})
+        .populate('shiftAvailability.shiftType');
     
     console.log("User Availability: ", userAvailable);
 
@@ -330,28 +441,22 @@ app.put('/staff/:staffId/available', async (req, res) => {
     const {staffId} = req.params;
     const updatedAvailability = req.body.body;
 
-    // console.log("Updated", updatedAvailability)
+    console.log("Updated", updatedAvailability)
 
-    const updAvailabilityObject = {
-        weekAvailability: [...updatedAvailability]
+    for(let i=0; i<7; i++) {
+        let oneDayAvailability = await Availability.findOneAndUpdate({person: staffId, dayOfWeek: i}, updatedAvailability[i], {omitUndefined:true})
+        if (!oneDayAvailability) {
+            newAvailability = new Availability({
+                person: staffId,
+                dayOfWeek: i,
+                shiftAvailability: [...updatedAvailability[i].shiftAvailability]
+            })
+            console.log("New Availability", newAvailability)
+            newAvailability.save();
+        }
     }
 
-    let userAvailable = await WeeklyAvailability.findOneAndUpdate({person: staffId}, updAvailabilityObject,{omitUndefined:true});
-
-    console.log("userAvailable", userAvailable)
-
-    if(!userAvailable) {
-        userAvailable = new WeeklyAvailability({
-            person: staffId,
-            weekAvailability: [...updatedAvailability]
-        })
-        userAvailable.save();
-    }
-    
-    console.log("User Availability Put", userAvailable);
-    // console.log("Updated Availability", updatedAvailability)
-
-    res.json(userAvailable)
+    res.json("Saved")
 })
 
 app.get('/staff/:staffId/timeoff', async (req, res) => {
@@ -418,6 +523,7 @@ app.put('/staff/:staffId', async (req, res) => {
     console.log("Staff", req.params);
     console.log("Staff Query", staffMember);
     console.log("Again", updatedUser)
+    // console.log("Again2", updatedUser.isAdmin)
 
     res.json(staffMember)
 })

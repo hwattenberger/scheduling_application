@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
+import { Button, TextField } from '@material-ui/core'
+import './LoginRegister.css'
 
 async function registerUser2(credentials) {
     return await axios.post('http://localhost:5000/auth/register', {
@@ -30,24 +32,31 @@ const Register = ({setLoginUser}) => {
         setLoginUser(registerPerson);
     })
 
+    const googleRegister = () => {
+        window.open("http://localhost:5000/auth/google", "_self");
+    }
+
     return (
-        <div id="Register">
-            <h2>Sign Up</h2>
-            <div>Sign up with Google</div>
-            <span>-or Sign up with Email</span>
-            <div>
+        <div id="registerPage">
+            <div id="registerDiv">
+                <div id="registerDiv-Header">
+                    <h2>Register</h2>
+                    <div>
+                        <Button variant="outlined" onClick={googleRegister}>Register with Google</Button>
+                    </div>
+                    -or- Register with Email
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        Email:
-                        <input type="text" name="email" onChange={e => setEmail(e.target.value)}/>
-                    </label>
-                    <label>
-                        Password:
-                        <input type="password" name="password" onChange={e => setPassword(e.target.value)}/>
-                    </label>
-                    <input type="submit" value="Register" />
+                    <div>
+                        <TextField name="email" label="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                    </div>
+                    <div>
+                        <TextField name="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    </div>
+                    <Button variant="outlined" type="submit">Register</Button>
                 </form>
             </div>
+
         </div>
     );
 }
