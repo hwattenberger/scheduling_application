@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import axios from "axios";
 import DatePickerSchedule from "./DatePickerSchedule"
 import Schedule from "./Schedule"
+import Button from '@material-ui/core/Button';
 import './Schedule.css';
 
 
@@ -84,7 +85,7 @@ const ScheduleIntro = (props) => {
             <h1 className="scheduleH1">Schedule</h1>
             <div id="scheduleDatePicker">
                 <DatePickerSchedule date={formatDatetoJustDate()} setDate={setDate}/>
-                {noSchedule === true && <button onClick={onClickCreateSchedule}>Create Schedule</button>}
+                {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create Schedule</Button>}
             </div>
             {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift}/>}
             {updatedScheduleShifts.length > 0 && <button onClick={saveSchedule}>Save Changes</button>}

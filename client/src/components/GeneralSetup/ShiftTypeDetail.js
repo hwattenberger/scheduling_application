@@ -53,7 +53,6 @@ const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave, ix}) => {
     if (shiftType) {
         return (
             <div className="listDiv">
-            {/* {console.log("Shift Types", shiftType)} */}
                 <span onClick={handleSaveShift}>
                     <Edit />
                 </span>

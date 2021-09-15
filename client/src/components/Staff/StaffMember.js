@@ -18,12 +18,10 @@ const noUser = {
 const StaffMember = (props) => {
     const [user, setUser] = useState(noUser);
     const { staffId } = useParams();
-    const [userSchedule, setUserSchedule] = useState({});
     const [shifts, setShifts] = useState([]);
 
     useEffect(() => {
         getUserInfoAndShifts();
-        // getShifts();
     }, []);
 
     function getUserInfoAndShifts() {
@@ -43,7 +41,7 @@ const StaffMember = (props) => {
     }
 
     function getShifts(userRole) {
-        axios.get('http://localhost:5000/shifts', {
+        axios.get('http://localhost:5000/shiftTypes', {
             withCredentials: true,
             params: {role: userRole._id}
         })
@@ -71,7 +69,6 @@ const StaffMember = (props) => {
     return (
         <div id="staffMemberInfoPage">
             <h2>Staff Member Setup</h2>
-            {/* {JSON.stringify(shifts)} */}
             <form onSubmit={handleSubmit}>
                 <div>
                     <TextField name="email" label="Email" value={user.email} onChange={handleInputChange} />
@@ -82,18 +79,6 @@ const StaffMember = (props) => {
                 <div>
                     <TextField name="lastName" label="Last Name" value={user.lastName} onChange={handleInputChange} />
                 </div>
-                {/* <label>
-                    Email:
-                    <input type="text" name="email" value={user.email} onChange={handleInputChange}/>
-                </label>
-                <label>
-                    First Name:
-                    <input type="test" name="firstName" value={user.firstName} onChange={handleInputChange}/>
-                </label>
-                <label>
-                    Last Name:
-                    <input type="test" name="lastName" value={user.lastName} onChange={handleInputChange}/>
-                </label> */}
                 <Button variant="outlined" type="submit">Update</Button>
             </form>
             {shifts && <StaffWeeklyAvailability shifts={shifts}/>}

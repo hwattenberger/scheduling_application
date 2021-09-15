@@ -41,8 +41,8 @@ const NavBarLinks = (props) => {
 
     if(userObject.isAdmin) return (
         <div id="navbar-links">
-            <div><a href="/generalSetup">Settings</a></div>
             <div><a href="/schedule">Schedule</a></div>
+            <div><a href="/generalSetup">Settings</a></div>
             <div><a href="/staff">Staff</a></div>
             {/* <div><a href="/staff">Shifts</a></div> */}
         </div>

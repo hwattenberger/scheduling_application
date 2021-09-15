@@ -17,7 +17,7 @@ const GeneralSetup = (props) => {
     }, []);
 
     function getShifts() {
-        axios.get('http://localhost:5000/shifts', {withCredentials: true})
+        axios.get('http://localhost:5000/shiftTypes', {withCredentials: true})
             .then(data => setShifts(data.data))
             .catch(e => console.log("Error Roles", e))
     }
@@ -40,7 +40,7 @@ const GeneralSetup = (props) => {
     function onShiftSave(id, ix, updatedShift) {
         // console.log("Edit shift", id, ix, updatedShift)
 
-        axios.put(`http://localhost:5000/shifts/${id}`, {
+        axios.put(`http://localhost:5000/shiftTypes/${id}`, {
             withCredentials: true,
             body: updatedShift
         })

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+// import axios from "axios";
 import './Schedule.css';
 import Badge from '@material-ui/core/Badge';
 
-
-const DailyNeeds = ({dayIx, weeklySchedule, shifts}) => {
+const ShiftDetail = ({dayIx, scheduleShift, shifts}) => {
 
     const dragStart = (e, scheduleShift) => {
         e.dataTransfer.setData('object', JSON.stringify(scheduleShift._id));
@@ -13,23 +12,29 @@ const DailyNeeds = ({dayIx, weeklySchedule, shifts}) => {
     }
 
     const bgColor = (shift) => {
-        const color = shifts[shift].role.color
+        const color = shifts[shift] && shifts[shift].role.color;
         return {backgroundColor: color};
     }
 
+    //Don't show if shift is full
+    if (scheduleShift.peopleNeeded - scheduleShift.peopleAssigned.length <= 0) return null;
+
+    return (
+        <Badge badgeContent={scheduleShift.peopleNeeded - scheduleShift.peopleAssigned.length} color="primary">
+            <div className="shiftsDayBlock" id={scheduleShift._id}
+                draggable onDragStart={(e) => dragStart(e, scheduleShift)} style={bgColor(scheduleShift.shift)}>
+                <div className="scheduleShiftName">{shifts[scheduleShift.shift] && shifts[scheduleShift.shift].name}</div>
+            </div>
+        </Badge>
+    )
+}
+
+const DailyNeeds = ({dayIx, weeklySchedule, shifts}) => {
+
     return (
         <div className="dailyNeedsContainer">
-            {/* {console.log("Shifts!!", shifts)} */}
             {weeklySchedule.days[dayIx].scheduleShifts.map((scheduleShift) => (
-                <Badge key={scheduleShift._id} badgeContent={scheduleShift.peopleNeeded - scheduleShift.peopleAssigned.length} color="primary">
-                    <div className="shiftsDayBlock" id={scheduleShift._id}
-                    draggable onDragStart={(e) => dragStart(e, scheduleShift)} style={bgColor(scheduleShift.shift)}>
-                        {/* <Badge badgeContent={scheduleShift.peopleNeeded} color="primary"> */}
-                            <div className="scheduleShiftName">{shifts[scheduleShift.shift].name}</div>
-                        {/* </Badge> */}
-                        {/* <div>Needed: {scheduleShift.peopleNeeded}</div> */}
-                    </div>
-                </Badge>
+                <ShiftDetail key={scheduleShift._id} dayIx={dayIx} scheduleShift={scheduleShift} shifts={shifts}/>
             ))}
         </div>
     )

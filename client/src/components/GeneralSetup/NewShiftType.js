@@ -34,7 +34,7 @@ const NewShiftType = ({setShifts, shifts, roles}) => {
         console.log("SHIFT TYPE NAME", shiftType.name)
         if (!shiftType.name) return "";
 
-        axios.post(`http://localhost:5000/shifts`, {
+        axios.post(`http://localhost:5000/shiftTypes`, {
             withCredentials: true,
             body: shiftType
         })
