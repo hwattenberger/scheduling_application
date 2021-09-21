@@ -4,11 +4,21 @@ import dayjs from 'dayjs';
 import './Schedule.css';
 import ColumnContentNeeds from "./ColumnContentNeeds";
 
+import NumericInput from 'react-numeric-input';
+
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+// import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 const FadeMenu = ({availShifts, setShift, shifts, currentStatus}) => {
@@ -169,7 +179,7 @@ const DailySchedulePerson = ({personSched, setShift, shifts}) => {
     );
 }
 
-const Schedule = ({weeklySchedule, date, staffShift}) => {
+const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
     const week = [".", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const [shifts, setShifts] = useState(null);
     const [availability, setWeeklyAvailability] = useState([]);
@@ -216,6 +226,10 @@ const Schedule = ({weeklySchedule, date, staffShift}) => {
         }
     }, [date]);
 
+    useEffect(() => {
+        console.log("Reloading")
+    }, [weeklySchedule]);
+
     // useEffect(() => {
     //     console.log("Schedule Use Effect", schedule)
     //     if (schedule.length === 0 && shifts.length > 0) {
@@ -245,11 +259,12 @@ const Schedule = ({weeklySchedule, date, staffShift}) => {
             <div id="needsDiv">
                 {week.map((day, columnIx) => (
                     <div key={columnIx} className="weekday-div">
-                        <span className="dayName">{day}</span>
+                        <NeedsDayHeader day={day} date={getDate(columnIx-1)} dayIx={columnIx-1} weeklySchedule={weeklySchedule} shifts={shifts} setWeeklySchedule={setWeeklySchedule} />
                         <ColumnContentNeeds columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts}/>
                     </div>
                 ))}
             </div>
+            {/* <EditDailyNeeds dayIx="2" weeklySchedule={weeklySchedule} shifts={shifts} /> */}
 
 
             <h2>Schedule</h2>
@@ -264,5 +279,83 @@ const Schedule = ({weeklySchedule, date, staffShift}) => {
         </div>
     )
 }
+
+const NeedsDayHeader = ({day, date, dayIx, weeklySchedule, shifts, setWeeklySchedule}) => {
+    const [open, setOpen] = useState(false);
+    const [dayScheduleShifts, setDayScheduleShifts] = useState([]);
+
+    useEffect(() => {
+        if(dayIx >= 0) {
+            const dayScheduleShifts = weeklySchedule.days[dayIx].scheduleShifts.map((shift) => shift)
+            setDayScheduleShifts([...dayScheduleShifts])
+        }
+    }, [])
+  
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+  
+    const handleClose = () => {
+        setOpen(false);
+        const dayScheduleShifts = weeklySchedule.days[dayIx].scheduleShifts.map((shift) => shift)
+        setDayScheduleShifts([...dayScheduleShifts])
+    };
+
+    const handleSave = () => {
+        setOpen(false);
+        console.log("weeklySchedule", weeklySchedule)
+        const newWeeklySchedule = {...weeklySchedule};
+        newWeeklySchedule.days[dayIx].scheduleShifts = [...dayScheduleShifts]
+        setWeeklySchedule(newWeeklySchedule);
+    };
+
+    const onChange = (shiftIx, e) => {
+        const newScheduleShift = [...dayScheduleShifts];
+        newScheduleShift[shiftIx].peopleNeeded = e;
+        setDayScheduleShifts(newScheduleShift);
+        // console.log("Test", newScheduleShift)
+    }
+    
+    if(dayIx < 0) return null;
+    if(!dayScheduleShifts.length > 0) return null;
+  
+    return (
+      <div>
+        <span className="dayName" onClick={handleClickOpen}>{day}</span>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Change Staff Needed for {day}, {date}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Update the number of people you want to work for each shift
+            </DialogContentText>
+            {dayScheduleShifts.map((scheduleShift, shiftIx) => (
+                <div key={scheduleShift._id}>
+                    {shifts[scheduleShift.shift] && shifts[scheduleShift.shift].name} - 
+                    {shifts[scheduleShift.shift].role.name}
+                    <NumericInput name="defNum" className="inputField" label="Defalt Number" onChange={(e) => onChange(shiftIx, e)}
+                        value={scheduleShift.peopleNeeded} min={0} max={100}/>
+                </div>
+            ))}
+            {/* <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Email Address"
+              type="email"
+              fullWidth
+            /> */}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 
 export default Schedule;

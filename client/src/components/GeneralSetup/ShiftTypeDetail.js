@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Edit } from '@material-ui/icons';
 
+import NumericInput from 'react-numeric-input';
+
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -69,7 +71,7 @@ const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave, ix}) => {
                         ))}
                     </Select>
                 </FormControl>
-
+                <NumericInput name="defNum" className="inputField" label="Defalt Number" value={shiftType.defNum} min={0} max={100}/>
                 <TextField name="defNum" className="inputField" label="Defalt Number" value={shiftType.defNum} onChange={handleInputChange} />
                 <TextField name="startTime" className="inputField" label="Start Time" value={shiftType.startTime} onChange={handleInputChange} />
                 <TextField name="endTime" className="inputField" label="End Time" value={shiftType.endTime} onChange={handleInputChange} />

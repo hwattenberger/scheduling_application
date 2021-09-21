@@ -55,7 +55,6 @@ const NeedsHeader = ({weeklySchedule, shifts}) => {
     return (
         <div className="dailyNeedsContainer">
             {/* {weeklySchedule.days[0].scheduleShifts.map((scheduleShift) => (
-
                 <div key={shifts[scheduleShift.shift]._id} className="shiftsDayBlock">
                     {shifts[scheduleShift.shift].name}
                 </div>

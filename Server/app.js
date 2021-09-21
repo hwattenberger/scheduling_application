@@ -13,7 +13,7 @@ const MongoDBStore = require('connect-mongo');
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const Availability = require('./models/availability');
+// const Availability = require('./models/availability');
 
 const authRoutes = require('./routes/auth');
 const shiftTypeRoutes = require('./routes/shiftType');

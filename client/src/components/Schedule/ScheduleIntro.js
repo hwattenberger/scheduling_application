@@ -23,6 +23,10 @@ const ScheduleIntro = (props) => {
         pullWeeklySchedule();
     }, [date]);
 
+    useEffect(() => {
+        console.log("ScheduleIntroTest")
+    }, [weeklySchedule]);
+
     function pullWeeklySchedule() {
         axios.get('http://localhost:5000/scheduleWeek', {
             withCredentials: true,
@@ -87,7 +91,7 @@ const ScheduleIntro = (props) => {
                 <DatePickerSchedule date={formatDatetoJustDate()} setDate={setDate}/>
                 {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create Schedule</Button>}
             </div>
-            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift}/>}
+            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift} setWeeklySchedule={setWeeklySchedule}/>}
             {updatedScheduleShifts.length > 0 && <button onClick={saveSchedule}>Save Changes</button>}
         </div>
     )
