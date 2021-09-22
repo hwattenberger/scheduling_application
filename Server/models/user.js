@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// const LocalStrategy = require('passport-local');
-
 
 const UserSchema = new Schema({
     id: {

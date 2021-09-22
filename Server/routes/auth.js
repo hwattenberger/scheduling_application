@@ -3,8 +3,12 @@ const passport = require('passport');
 const router = express.Router();
 const auths = require('../controllers/auths');
 
+
+// router.route('/login')
+//   .post(passport.authenticate('local'), auths.login)
+
 router.route('/login')
-  .post(passport.authenticate('local'), auths.login)
+  .post(auths.authenticate, auths.login)
 
 router.route('/logout')
   .get(auths.logout)

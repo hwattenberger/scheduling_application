@@ -3,24 +3,18 @@ import { useState } from "react";
 import { Button, TextField } from '@material-ui/core'
 import './LoginRegister.css'
 
+
 async function loginUser(credentials) {
-    return await axios.post('http://localhost:5000/auth/login', {
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(credentials)
+    return await axios.post('http://localhost:5000/auth/login', JSON.stringify(credentials),{
+        headers: {'Content-Type': 'application/json'}, withCredentials: true
     })
-        .then(data => console.log("YESYES", data)) //data.data.token)
+        .then(data => window.open("/", "_self"))
         .catch(e => console.log("ERRR", e))
 }
 
-async function loginUser2(credentials) {
-    return await axios.post('http://localhost:5000/auth/login', credentials)
-        .then(data => console.log("YESYES", data)) //data.data.token)
-        .catch(e => console.log("ERRR", e))
-}
-
-const Login = ({setLoginUser}) => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+const Login = (props) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -28,7 +22,6 @@ const Login = ({setLoginUser}) => {
             email,
             password
         })
-        setLoginUser(loginPerson);
     })
 
     const googleLogin = () => {

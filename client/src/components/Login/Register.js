@@ -13,12 +13,12 @@ async function registerUser2(credentials) {
 }
 
 async function registerUser(credentials) {
-    return await axios.post('http://localhost:5000/auth/register', credentials)
+    return await axios.post('http://localhost:5000/auth/register', credentials, {withCredentials: true})
         .then(data => console.log("YESYES", data)) //data.data.token)
         .catch(e => console.log("ERRR", e))
 }
 
-const Register = ({setLoginUser}) => {
+const Register = (props) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
@@ -29,7 +29,7 @@ const Register = ({setLoginUser}) => {
             email,
             password
         })
-        setLoginUser(registerPerson);
+        // setLoginUser(registerPerson);
     })
 
     const googleRegister = () => {

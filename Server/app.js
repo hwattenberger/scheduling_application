@@ -5,14 +5,16 @@ if (process.env.NODE_ENV !== "production") {
 const express = require('express');
 const session = require('express-session');
 // const flash = require('connect-flash');
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const cors = require('cors');
 
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongo');
+// const User = require('./models/user');
 
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+// const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+// const LocalStrategy = require('passport-local').Strategy;
 // const Availability = require('./models/availability');
 
 const authRoutes = require('./routes/auth');
@@ -43,8 +45,9 @@ const app = express();
 
 app.use(express.static(__dirname));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use(cors({ origin: "http://localhost:3000", credentials: true}));
 
 const store = MongoDBStore.create({
@@ -64,7 +67,7 @@ const sessionConfig = {
     name: 'session',
     secret: secret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
@@ -75,8 +78,8 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 // app.use(flash());
 
-require("./utils/google");
 require("./utils/local");
+require("./utils/google");
 require("./utils/passport");
 
 app.use(passport.initialize());
@@ -97,7 +100,8 @@ app.use('/scheduleShift', scheduleShiftRoutes);
 app.use('/staffAvailabilityDate', staffAvailabilityRoutes);
 
 app.get('/', (req, res) => {
-    res.send("Yes!"+req.user);
+    console.log("Main page", req.session)
+    res.send("Yes!"+req.user+req.isAuthenticated());
 })
 
 app.listen(port, () => {

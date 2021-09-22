@@ -1,51 +1,36 @@
 const User = require('../models/user');
-const express = require('express');
+// const express = require('express');
 const passport = require('passport');
 const bcrypt = require("bcryptjs");
 
 module.exports.login = (req, res) => {
-  console.log("LOGIN", req.body);
-  //Todo: Should add some validation probably
-
-  const authenticate = passport.authenticate('local', (err, token, userData) => {
-    console.log("Yo")
-    if (err) {
-      return res.status(400).json({
-        success: false,
-        message: err.message = "Could not process login"
-      })
-    }
-  
-    return res.json({
-      success: true,
-      message: "You have successfully logged in",
-      token,
-      user: userData
-    });
-  })
+  console.log("LOGIN", req.session);
+  try {
+    res.json({message: "Successfully logged in!"})
+  }
+  catch (error) {
+    res.status(500).json({message: "ERROR", error: error.message})
+  }
 }
 
-// module.exports.login = (req, res) => {
-//   console.log("LOGIN", req.body);
-//   //Todo: Should add some validation probably
+module.exports.authenticate = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
 
-//   const authenticate = passport.authenticate('local', (err, token, userData) => {
-//     console.log("Yo")
-//     if (err) {
-//       return res.status(400).json({
-//         success: false,
-//         message: err.message = "Could not process login"
-//       })
-//     }
-  
-//     return res.json({
-//       success: true,
-//       message: "You have successfully logged in",
-//       token,
-//       user: userData
-//     });
-//   })
-// }
+    if (info) return res.status(401).json({message: info.message});
+
+    if (!user) {
+      return res.status(401).json({ message: 'Try logging in again'});
+    }
+
+    req.logIn(user, function(err) {
+      if (err) return next(err);
+      return next();
+    })
+
+    next();
+  })(req, res, next);
+}
 
 module.exports.logout = (req, res) => {
     req.logout();
@@ -62,8 +47,6 @@ module.exports.googleCallback = (req, res) => {
 
 module.exports.localSignup = async (req, res) => {
     const { email, password } = req.body;
-
-    // console.log("Register", email, password, req.body.body)
 
     const currentUser = await User.getUserByEmail(email);
     if(currentUser) {
@@ -87,7 +70,6 @@ module.exports.localSignup = async (req, res) => {
         user: newUser
       });
     } catch (e) {
-    //   req.flash("error", "Error creating a new account. Try a different login method.");
       return res.status(400).json({
         success: false,
         message: "Could not process registration"
