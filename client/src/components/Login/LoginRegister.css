@@ -1,24 +1,38 @@
-#loginDiv, #registerDiv {
+#loginDiv,
+#registerDiv {
     margin: auto;
     max-width: 300px;
     /* background-color: grey; */
 }
 
-#loginDiv #loginDiv-Header, #registerDiv #registerDiv-Header{
+#loginDiv #loginDiv-Header,
+#registerDiv #registerDiv-Header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#loginDiv button, #registerDiv button {
+#loginDiv button,
+#registerDiv button {
     margin-top: 5px;
 }
 
-#loginDiv .MuiTextField-root, #registerDiv .MuiTextField-root{
+#loginDiv .MuiTextField-root,
+#registerDiv .MuiTextField-root {
     width: 100%;
 }
 
-#loginDiv h2, #registerDiv h2 {
+#loginDiv h2,
+#registerDiv h2 {
+    text-align: center;
+}
+
+#loginDiv #errorDiv,
+#registerDiv #errorDiv {
+    background-color: var(--unavailable-color);
+    margin: 10px 0px;
+    padding: 5px;
+    border-radius: 3px;
     text-align: center;
 }

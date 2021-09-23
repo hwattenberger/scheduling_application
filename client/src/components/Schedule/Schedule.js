@@ -3,6 +3,7 @@ import axios from "axios";
 import dayjs from 'dayjs';
 import './Schedule.css';
 import ColumnContentNeeds from "./ColumnContentNeeds";
+import UserAvatar from '../General/UserAvatar'
 
 import NumericInput from 'react-numeric-input';
 
@@ -81,9 +82,13 @@ const ScheduleHeader = ({availability}) => {
             {/* {console.log("Availability1", availability)} */}
             {availability[0].peopleAvailability.map((personAvailability) => (
                 <div key={personAvailability.person._id} className="personDayBlock" style={bgColor(personAvailability)}>
-                {/* {console.log("personAvailability", personAvailability)} */}
-                    <div>{personAvailability.person.firstName} {personAvailability.person.lastName}</div>
-                    <div>{personAvailability.person.userRole.name}</div>
+                    <div>
+                        <UserAvatar user={personAvailability.person} />
+                    </div>
+                    <div>
+                        <div>{personAvailability.person.firstName} {personAvailability.person.lastName}</div>
+                        {/* <div>{personAvailability.person.userRole.name}</div> */}
+                    </div>
                 </div>
             ))}
         </div>

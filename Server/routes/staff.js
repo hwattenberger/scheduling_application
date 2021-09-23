@@ -2,12 +2,16 @@ const express = require('express');
 const router = express.Router();
 const staffs = require('../controllers/staffs');
 
+const multer = require('multer');
+const {storage} = require('../addons/cloudinary');
+const upload = multer({storage});
+
 router.route('/')
     .get(staffs.getAllStaff)
 
 router.route('/:staffId')
     .get(staffs.getStaffMember)
-    .put(staffs.putStaffMember)
+    .put(upload.single('profilePhoto'), staffs.putStaffMember)
 
 router.route('/:staffId/upcomingShifts')
     .get(staffs.getUpcomingShifts)

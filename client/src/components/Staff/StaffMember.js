@@ -3,22 +3,27 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import StaffWeeklyAvailability from "./StaffWeeklyAvailability";
 import StaffRequestOff from "./StaffRequestOff";
+import UserAvatar from "../General/UserAvatar"
 
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
 
 import './StaffWeeklyAvailability.css';
 
 const noUser = {
     email: "",
     firstName: "",
-    lastName: ""
+    lastName: "",
+    profilePhoto: ""
 }
 
-const StaffMember = (props) => {
+const StaffMember = () => {
     const [user, setUser] = useState(noUser);
     const { staffId } = useParams();
     const [shifts, setShifts] = useState([]);
+    const [newPhoto, setNewPhoto] = useState("");
 
     useEffect(() => {
         getUserInfoAndShifts();
@@ -31,7 +36,8 @@ const StaffMember = (props) => {
                     ...data.data,
                     email: data.data.email || "",
                     firstName: data.data.firstName || "",
-                    lastName: data.data.lastName || ""
+                    lastName: data.data.lastName || "",
+                    profilePhoto: data.data.profilePhoto || ""
                 }
                 setUser(tempUser)
                 console.log("Success temp user", user)
@@ -53,14 +59,38 @@ const StaffMember = (props) => {
         setUser({ ...user,[e.target.name]:e.target.value });
     }
 
+    const handleFileChange = (e) => {
+        setNewPhoto(e.target.files[0]);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('profilePhoto', newPhoto);
+        formData.append('userInput', JSON.stringify({
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profilePhoto: user.profilePhoto
+        }))
 
-        axios.put(`http://localhost:5000/staff/${staffId}`, {
+        axios.put(`http://localhost:5000/staff/${staffId}`, formData, {
             withCredentials: true,
-            body: user
-        })
-            .then(data => console.log("Success!", data.data))
+            headers: {
+                'Content-type': 'multipart/form-data'
+        }})
+            .then(data => {
+                const tempUser = {
+                    ...data.data,
+                    email: data.data.email || "",
+                    firstName: data.data.firstName || "",
+                    lastName: data.data.lastName || "",
+                    profilePhoto: data.data.profilePhoto || ""
+                }
+                setUser(tempUser);
+                setNewPhoto("");
+                console.log("Success!", data.data)
+            })
             .catch(e => console.log("Error Staff", e))
     }
 
@@ -78,6 +108,21 @@ const StaffMember = (props) => {
                 </div>
                 <div>
                     <TextField name="lastName" label="Last Name" value={user.lastName} onChange={handleInputChange} />
+                </div>
+                Current Image: <UserAvatar user={user} />
+                <div id="uploadImg-div">
+                    <label htmlFor="raised-button-file">
+                        <input accept="image/*" name="profilePhoto" onChange={handleFileChange}
+                            style={{ display: 'none' }} id="raised-button-file" type="file"/>
+                        <Button variant="contained" component="span" startIcon={<PhotoCamera />}>
+                            Choose New Image
+                        </Button>
+                        {newPhoto && newPhoto.name}
+                    </label> 
+                    {/* <label>
+                        <input name="profilePhoto" label="Image" type="file" onChange={handleFileChange} />
+                        <Button>New Image</Button>
+                    </label> */}
                 </div>
                 <Button variant="outlined" type="submit">Update</Button>
             </form>

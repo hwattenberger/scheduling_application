@@ -4,7 +4,6 @@ const passport = require('passport');
 const bcrypt = require("bcryptjs");
 
 module.exports.login = (req, res) => {
-  console.log("LOGIN", req.session);
   try {
     res.json({message: "Successfully logged in!"})
   }
@@ -38,7 +37,9 @@ module.exports.logout = (req, res) => {
 }
 
 module.exports.getUser = (req, res) => {
-  res.send(req.user);
+  const user = req.user;
+  delete user.password
+  res.send(user);
 }
 
 module.exports.googleCallback = (req, res) => {
@@ -64,11 +65,15 @@ module.exports.localSignup = async (req, res) => {
         password: hashedPassword
       })
 
-      return res.json({
-        success: true,
-        message: "You have successfully registered",
-        user: newUser
-      });
+      req.logIn(newUser, function(err) {
+        if (err) return next(err);
+        return res.json({
+          success: true,
+          message: "You have successfully registered",
+          user: newUser
+        });
+      })
+
     } catch (e) {
       return res.status(400).json({
         success: false,

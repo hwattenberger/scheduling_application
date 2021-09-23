@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import './Staff.css';
-import randomImg from "../../randomimg.png"
+// import randomImg from "../../randomimg.png"
+import UserAvatar from '../General/UserAvatar'
 
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl';
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 // }
 
 const UserRoleEdit = ({person, roles, onEdit}) => {
-    const [userRole, setUserRole] = useState(person.userRole._id);
+    const [userRole, setUserRole] = useState(person.userRole && person.userRole._id);
     const classes = useStyles();
 
     const handleInputChangeRole = (e) => {
@@ -135,7 +136,8 @@ const Staff = () => {
             {/* {console.log("STAFF", staff)} */}
             {staff.map((person, ix) => (
                 <div key={person._id} className="staffLine">
-                    <a href={`/staff/${person._id}`}><img className="userPicture" src={randomImg}></img></a>
+                    <a href={`/staff/${person._id}`}><UserAvatar user={person}/></a>
+                    {/* <a href={`/staff/${person._id}`}><img className="userPicture" src={randomImg}></img></a> */}
                     <div>{person.firstName} {person.lastName}</div>
                     <div>{person.email}</div>
                     <UserRoleEdit person={person} roles={roles} onEdit={(updStaff) => editStaff(person._id, ix, updStaff)} />

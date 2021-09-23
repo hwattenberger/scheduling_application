@@ -3,34 +3,36 @@ import { useState } from "react";
 import { Button, TextField } from '@material-ui/core'
 import './LoginRegister.css'
 
-async function registerUser2(credentials) {
-    return await axios.post('http://localhost:5000/auth/register', {
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(credentials)
-    })
-        .then(data => console.log("YESYES", data)) //data.data.token)
-        .catch(e => console.log("ERRR", e))
-}
-
-async function registerUser(credentials) {
-    return await axios.post('http://localhost:5000/auth/register', credentials, {withCredentials: true})
-        .then(data => console.log("YESYES", data)) //data.data.token)
-        .catch(e => console.log("ERRR", e))
-}
-
 const Register = (props) => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
-        console.log("Register here", email, password)
         const registerPerson = await registerUser({
             email,
             password
         })
-        // setLoginUser(registerPerson);
     })
+
+    async function registerUser(credentials) {
+        return await axios.post('http://localhost:5000/auth/register', credentials, {withCredentials: true})
+            .then(data => window.open("/", "_self"))
+            .catch(e => {
+                if (e.response.data && e.response.data.message) setError(e.response.data.message)
+                else setError("Incorrect username or password")
+            })
+    }
+
+    const getError = () => {
+        if (error) return (
+            <div id="errorDiv">
+                {error}
+            </div>
+            );
+        return null;
+    }
 
     const googleRegister = () => {
         window.open("http://localhost:5000/auth/google", "_self");
@@ -46,6 +48,7 @@ const Register = (props) => {
                     </div>
                     -or- Register with Email
                 </div>
+                {getError()}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <TextField name="email" label="Email" value={email} onChange={e => setEmail(e.target.value)} />

@@ -1,9 +1,11 @@
 const User =  require('../models/user');
 const Availability = require('../models/availability');
 const TimeoffRequest = require('../models/timeoffRequest');
+const cloudinary = require('../addons/cloudinary')
+
 
 module.exports.getAllStaff = async (req, res) => {
-    const staff = await User.find({}, {password: 0}).populate({path:'userRole'});
+    const staff = await User.find({}, {password: 0}).sort({firstName: 1}).populate({path:'userRole'});
     // delete staff.password;
     // console.log("Staff", staff);
     res.json(staff);
@@ -13,7 +15,7 @@ module.exports.getStaffMember = async (req, res) => {
     const {staffId} = req.params;
     const staffMember = await User.findById(staffId).populate({path:'userRole'});
 
-    delete staffMember.password;
+    staffMember.password = undefined;
 
     console.log("Staff Query", staffMember);
 
@@ -22,15 +24,28 @@ module.exports.getStaffMember = async (req, res) => {
 
 module.exports.putStaffMember = async (req, res) => {
     const {staffId} = req.params;
-    const updatedUser = req.body.body;
+    const updatedUser = JSON.parse(req.body.userInput);
+    const updatedImg = req.file;
 
-    const staffMember = await User.findByIdAndUpdate(staffId, updatedUser, {omitUndefined:true});
-    // const staff = await User.find({});
-    console.log("Staff", req.params);
-    console.log("Staff Query", staffMember);
-    console.log("Again", updatedUser)
+    if(updatedImg) {
+        //Delete existing image
+        if(updatedUser.profilePhoto) {
+            await cloudinary.deleteCloudImage(updatedUser.profilePhoto.filename);
+        }
+
+        updatedUser.profilePhoto = {
+            filename: updatedImg.filename,
+            url: updatedImg.path
+        }
+    }
+
+    const staffMember = await User.findByIdAndUpdate(staffId, updatedUser, {new: true, omitUndefined:true});
+    // console.log("Staff", req.file);
+    // console.log("Staff Query", staffMember);
+    // console.log("Again", updatedUser.firstName)
     // console.log("Again2", updatedUser.isAdmin)
 
+    staffMember.password = undefined;
     res.json(staffMember)
 }
 

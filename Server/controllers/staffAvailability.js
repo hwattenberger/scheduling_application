@@ -67,6 +67,7 @@ module.exports.getStaffAvailabilityForWeek = async (req, res) => {
             "peopleAvailability.person.firstName": 1,
             "peopleAvailability.person.lastName": 1,
             "peopleAvailability.person._id": 1,
+            "peopleAvailability.person.profilePhoto.url": 1,
             "peopleAvailability.person.userRole": 1,
             "peopleAvailability.shiftAvailability.isAvailable": 1,
             "peopleAvailability.timeoff._id": 1,
@@ -75,7 +76,7 @@ module.exports.getStaffAvailabilityForWeek = async (req, res) => {
             "peopleAvailability.scheduledShift": 1
         }
     },{ 
-        $sort : {_id: 1}
+        $sort : {"_id": 1}
     }])
 
     console.log("getWeekAvailability", getWeekAvailability)

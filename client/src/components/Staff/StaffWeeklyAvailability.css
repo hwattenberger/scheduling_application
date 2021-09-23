@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-} 
+}
 
 #weekDiv .dayName {
     font-weight: 500;
@@ -33,6 +33,10 @@
 
 #staffMemberInfoPage button {
     margin-top: 5px;
+}
+
+#staffMemberInfoPage #uploadImg-div {
+    margin: 5px 0px;
 }
 
 #staffTimeoff button {

@@ -95,6 +95,13 @@ const StaffWeeklyAvailability = ({shifts}) => {
         setUserWeeklyAvail(TempUserWeeklyAvail);
     }
 
+    if (userWeeklyAvail.length === 0) return (
+        <div id="weeklyAvaiability">
+            <h2>Your weekly availability</h2>
+            No shifts available - work with your manager to update your role
+        </div>
+    )
+
     return (
         <div id="weeklyAvaiability">
             <h2>Your weekly availability</h2>

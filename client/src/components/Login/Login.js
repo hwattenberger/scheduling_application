@@ -4,17 +4,10 @@ import { Button, TextField } from '@material-ui/core'
 import './LoginRegister.css'
 
 
-async function loginUser(credentials) {
-    return await axios.post('http://localhost:5000/auth/login', JSON.stringify(credentials),{
-        headers: {'Content-Type': 'application/json'}, withCredentials: true
-    })
-        .then(data => window.open("/", "_self"))
-        .catch(e => console.log("ERRR", e))
-}
-
 const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -23,6 +16,26 @@ const Login = (props) => {
             password
         })
     })
+
+    async function loginUser(credentials) {
+        return await axios.post('http://localhost:5000/auth/login', JSON.stringify(credentials),{
+            headers: {'Content-Type': 'application/json'}, withCredentials: true
+        })
+            .then(data => window.open("/", "_self"))
+            .catch(e => {
+                if (e.response.data && e.response.data.message) setError(e.response.data.message)
+                else setError("Incorrect username or password")
+            })
+    }
+
+    const getError = () => {
+        if (error) return (
+            <div id="errorDiv">
+                {error}
+            </div>
+            );
+        return null;
+    }
 
     const googleLogin = () => {
         window.open("http://localhost:5000/auth/google", "_self");
@@ -38,6 +51,7 @@ const Login = (props) => {
                     </div>
                     -or- Sign in with Email
                 </div>
+                {getError()}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <TextField name="email" label="Email" value={email} onChange={e => setEmail(e.target.value)} />

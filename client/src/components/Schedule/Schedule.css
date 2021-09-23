@@ -1,14 +1,15 @@
-
 #mainSchedule h2 {
     margin-bottom: 0;
 }
 
-#mainWeekDiv, #needsDiv {
+#mainWeekDiv,
+#needsDiv {
     display: flex;
     justify-content: space-between;
 }
 
-#mainWeekDiv .weekday-div, #needsDiv .weekday-div{
+#mainWeekDiv .weekday-div,
+#needsDiv .weekday-div {
     background-color: var(--main-divs-color);
     width: 100%;
     margin: 2px;
@@ -67,12 +68,14 @@
     width: 100%;
 }
 
-#needsDiv .scheduleShiftName, #needsDiv .MuiBadge-root {
+#needsDiv .scheduleShiftName,
+#needsDiv .MuiBadge-root {
     width: 100%;
     /* height: 100%; */
 }
 
-#mainWeekDiv .dailyScheduleContainer, #needsDiv .dailyNeedsContainer {
+#mainWeekDiv .dailyScheduleContainer,
+#needsDiv .dailyNeedsContainer {
     width: 100%;
 }
 
@@ -103,9 +106,10 @@
     padding: inherit;
     height: 100%;
     width: 100%;
-  }
+}
 
-#mainWeekDiv, .availableButtonDiv {
+#mainWeekDiv,
+.availableButtonDiv {
     height: 100%;
     width: 100%;
 }
