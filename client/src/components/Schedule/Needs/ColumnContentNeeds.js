@@ -1,6 +1,4 @@
 import React from "react";
-// import axios from "axios";
-import './Schedule.css';
 import Badge from '@material-ui/core/Badge';
 
 const ShiftDetail = ({dayIx, scheduleShift, shifts}) => {

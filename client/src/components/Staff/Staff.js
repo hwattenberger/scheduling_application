@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import './Staff.css';
-// import randomImg from "../../randomimg.png"
 import UserAvatar from '../General/UserAvatar'
 
 import TextField from '@material-ui/core/TextField'

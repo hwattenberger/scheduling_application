@@ -36,3 +36,9 @@
     border-radius: 3px;
     text-align: center;
 }
+
+.googleImg {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}

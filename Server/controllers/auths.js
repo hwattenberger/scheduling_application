@@ -38,7 +38,7 @@ module.exports.logout = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   const user = req.user;
-  delete user.password
+  if(user) delete user.password
   res.send(user);
 }
 
@@ -48,6 +48,20 @@ module.exports.googleCallback = (req, res) => {
 
 module.exports.localSignup = async (req, res) => {
     const { email, password } = req.body;
+
+    if(!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Must enter email address"
+      });
+    }
+
+    if(!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Must enter password"
+      });
+    }
 
     const currentUser = await User.getUserByEmail(email);
     if(currentUser) {

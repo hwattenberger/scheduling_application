@@ -31,6 +31,27 @@
     font-size: 1.2em;
 }
 
+#mainSchedule .dayHeader {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+#mainSchedule .editNeeds {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+
+#mainSchedule .editNeeds svg {
+    font-size: 1.5em;
+}
+
+#mainSchedule .editNeeds svg:hover {
+    color: rgb(29, 28, 28, .75);
+    cursor: pointer;
+}
+
 #mainWeekDiv .shiftDiv {
     background-color: var(--main-divs-color);
     width: 100%;
@@ -87,7 +108,8 @@
     background-color: var(--undetermined-color);
 }
 
-#mainWeekDiv .Scheduled {
+#mainWeekDiv .Scheduled,
+#mainWeekDiv .Multiple {
     background-color: var(--scheduled-color);
 }
 

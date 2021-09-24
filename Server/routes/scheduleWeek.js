@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const scheduleWeeks = require('../controllers/scheduleWeeks');
+const {isLoggedIn, isAdmin} = require('../middleware/index');
 
 router.route('/')
-    .get(scheduleWeeks.getScheduleWeek)
-    .post(scheduleWeeks.postScheduleWeek)
+    .get(isLoggedIn, scheduleWeeks.getScheduleWeek)
+    .post(isAdmin, scheduleWeeks.postScheduleWeek)
 
 
 module.exports = router;

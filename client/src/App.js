@@ -32,6 +32,9 @@ function App() {
         <Route path="/register">
           <Register />
         </Route>
+        <Route path={`/staff/:staffId/schedule`}>
+          <UserScheduledShifts />
+        </Route>
         <Route path={`/staff/:staffId`}>
           <StaffMember />
         </Route>
@@ -43,9 +46,6 @@ function App() {
         </Route>
         <Route path="/schedule">
           <ScheduleIntro />
-        </Route>
-        <Route path={`/myShifts/:staffId`}>
-          <UserScheduledShifts />
         </Route>
         <Route path="/">
           <Landing/>

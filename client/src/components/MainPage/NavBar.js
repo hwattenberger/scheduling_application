@@ -22,7 +22,7 @@ const NavBar = () => {
             <div id="navbar-logo">
                 <a href="/">MySchedule</a>
             </div>
-            <NavBarLinks />
+            <NavBarLinks userObject={userObject}/>
             <div id="navbar-login">
                 {!userObject && <a href="/login"><Button variant="outlined">Login</Button></a>}
                 {!userObject && <a href="/register"><Button variant="outlined">Create Account</Button></a>}
@@ -33,9 +33,9 @@ const NavBar = () => {
 }
 
 
-const NavBarLinks = (props) => {
-    const userObject = useContext(myContext);
-    console.log("Nav user", userObject)
+const NavBarLinks = ({userObject}) => {
+    // const userObject = useContext(myContext);
+    // console.log("Nav user", userObject)
 
     if(!userObject) return null;
 
@@ -44,14 +44,13 @@ const NavBarLinks = (props) => {
             <div><a href="/schedule">Schedule</a></div>
             <div><a href="/generalSetup">Settings</a></div>
             <div><a href="/staff">Staff</a></div>
-            {/* <div><a href="/staff">Shifts</a></div> */}
         </div>
     )
 
     return (
         <div id="navbar-links">
-            <div>Settings</div>
-            <div>My Schedule</div>
+            <div><a href={`/staff/${userObject._id}/schedule`}>My Schedule</a></div>
+            <div><a href={`/staff/${userObject._id}`}>Settings</a></div>
         </div>
     )
 }

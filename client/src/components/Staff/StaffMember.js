@@ -40,8 +40,7 @@ const StaffMember = () => {
                     profilePhoto: data.data.profilePhoto || ""
                 }
                 setUser(tempUser)
-                console.log("Success temp user", user)
-                getShifts(tempUser.userRole);
+                if(tempUser.userRole) getShifts(tempUser.userRole);
             })
             .catch(e => console.log("Error Staff", e))
     }

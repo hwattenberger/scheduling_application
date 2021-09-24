@@ -6,22 +6,24 @@ const multer = require('multer');
 const {storage} = require('../addons/cloudinary');
 const upload = multer({storage});
 
+const {isLoggedIn, isAdmin} = require('../middleware/index');
+
 router.route('/')
-    .get(staffs.getAllStaff)
+    .get(isAdmin, staffs.getAllStaff)
 
 router.route('/:staffId')
-    .get(staffs.getStaffMember)
-    .put(upload.single('profilePhoto'), staffs.putStaffMember)
+    .get(isLoggedIn, staffs.getStaffMember)
+    .put(isLoggedIn, upload.single('profilePhoto'), staffs.putStaffMember)
 
 router.route('/:staffId/upcomingShifts')
-    .get(staffs.getUpcomingShifts)
+    .get(isLoggedIn, staffs.getUpcomingShifts)
 
 router.route('/:staffId/available')
-    .get(staffs.getUserAvailability)
-    .put(staffs.putUserAvailability)
+    .get(isLoggedIn, staffs.getUserAvailability)
+    .put(isLoggedIn, staffs.putUserAvailability)
 
 router.route('/:staffId/timeoff')
-    .get(staffs.getUserTimeoff)
-    .post(staffs.postUserTimeoff)
+    .get(isLoggedIn, staffs.getUserTimeoff)
+    .post(isLoggedIn, staffs.postUserTimeoff)
 
 module.exports = router;

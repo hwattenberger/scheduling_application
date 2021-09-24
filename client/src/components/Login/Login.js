@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Button, TextField } from '@material-ui/core'
+import googleImg from '../../images/google-logo.png'
 import './LoginRegister.css'
 
 
@@ -47,7 +48,7 @@ const Login = (props) => {
                 <div id="loginDiv-Header">
                     <h2>Login</h2>
                     <div>
-                        <Button variant="outlined" onClick={googleLogin}>Sign in with Google</Button>
+                        <Button variant="outlined" onClick={googleLogin}><img className="googleImg" src={googleImg} />Sign in with Google</Button>
                     </div>
                     -or- Sign in with Email
                 </div>

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from 'dayjs';
 import './Schedule.css';
-import ColumnContentNeeds from "./ColumnContentNeeds";
+import ColumnContentNeeds from "./Needs/ColumnContentNeeds";
 import UserAvatar from '../General/UserAvatar'
-
-import NumericInput from 'react-numeric-input';
+import NeedsHeader from "./Needs/NeedsHeader"
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -13,59 +12,144 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-// import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
+import {List, ListItem, ListItemIcon, ListItemText, Checkbox} from '@material-ui/core';
 
 
-const FadeMenu = ({availShifts, setShift, shifts, currentStatus}) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-  
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
+const ChooseShiftsModel = ({currentStatus, personSched, setShift, shifts}) => {
+    const [open, setOpen] = useState(false);
+    const [checked, setChecked] = useState([]);
+
+    useEffect(() => {
+        clearChecks();
+    }, [])
+
+    const handleToggle = (ix) => () => {
+        const newChecked = [...checked]
+        newChecked[ix] = !newChecked[ix]
+
+        setChecked(newChecked);
+    };
+
+    const clearChecks = () => {
+        const newChecked = [];
+        let found = false;
+        personSched.shiftAvail.forEach((shift, ix) => {
+            found = false;
+            for (let i = 0; i < personSched.scheduledShift.length; i++) {
+                if(shift.shiftType === personSched.scheduledShift[i].shift) found=true;
+            }
+            newChecked[ix] = found;
+        })
+        setChecked(newChecked);
+    }
+
+    const handleClickOpen = () => {
+        setOpen(true);
     };
   
-    const handleClose = (event) => {
-      setAnchorEl(null);
-    //   const { myValue } = event.currentTarget.dataset;
-    //   console.log(event.target.value) // --> 123
-      if (event.target.value !== undefined) {
-        setShift(event.target.value);
-      }
+    const handleClose = () => {
+        clearChecks();
+        setOpen(false);
     };
-  
+
+    const handleSave = () => {
+        const updatedShifts = personSched.shiftAvail.map((shift, ix) => {
+            return {
+                shift: shift.shiftType,
+                scheduled: checked[ix]
+            }
+        })
+        setOpen(false);
+        setShift(updatedShifts);
+    };
+
+    const labelId = (shift) => {
+        return `checkbox-list-label-${shift.shiftType}`
+    }
+
     return (
-      <div className="availableButtonDiv">
-        <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClick}>
-          {currentStatus}
+      <div>
+        <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClickOpen}>
+            {currentStatus}
         </Button>
-        <Menu
-          id="fade-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          TransitionComponent={Fade}
-        >
-          {availShifts.map((shift, ix) => (
-            <div key={shift.shiftType}>
-              <MenuItem onClick={handleClose} value={ix}>{shifts[shift.shiftType].name}</MenuItem>
-            </div>
-          ))}
-        </Menu>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Shifts Available</DialogTitle>
+            <DialogContent>
+                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                {personSched.shiftAvail.map((shift, ix) => (
+                        <ListItem key={shift.shiftType} role={undefined} dense button onClick={handleToggle(ix)}>
+                            <ListItemIcon>
+                                <Checkbox
+                                edge="start"
+                                checked={checked[ix]}
+                                tabIndex={-1}
+                                disableRipple
+                                inputProps={{ 'aria-labelledby': labelId(shift) }}
+                                />
+                            </ListItemIcon>
+                            <ListItemText id={labelId(shift)} primary={shifts[shift.shiftType].name} />
+                        </ListItem>
+                ))}
+                </List>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleSave} color="primary">
+                    Save
+                </Button>
+            </DialogActions>
+        </Dialog>
       </div>
     );
-}
+  }
+
+
+// const FadeMenu = ({availShifts, setShift, shifts, currentStatus}) => {
+//     const [anchorEl, setAnchorEl] = React.useState(null);
+//     const open = Boolean(anchorEl);
+  
+//     const handleClick = (event) => {
+//       setAnchorEl(event.currentTarget);
+//     };
+  
+//     const handleClose = (event) => {
+//       setAnchorEl(null);
+//     //   const { myValue } = event.currentTarget.dataset;
+//     //   console.log(event.target.value) // --> 123
+//       if (event.target.value !== undefined) {
+//         setShift(event.target.value);
+//       }
+//     };
+  
+//     return (
+//       <div className="availableButtonDiv">
+//         <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClick}>
+//           {currentStatus}
+//         </Button>
+//         <Menu
+//           id="fade-menu"
+//           anchorEl={anchorEl}
+//           keepMounted
+//           open={open}
+//           onClose={handleClose}
+//           TransitionComponent={Fade}
+//         >
+//           {availShifts.map((shift, ix) => (
+//             <div key={shift.shiftType}>
+//               <MenuItem onClick={handleClose} value={ix}>{shifts[shift.shiftType].name}</MenuItem>
+//             </div>
+//           ))}
+//         </Menu>
+//       </div>
+//     );
+// }
 
 const ColumnContentSchedule = ({columnIx, availability, staffShift, shifts}) => {
     if (!availability.length > 0) return null;
     if (columnIx === 0) return (<ScheduleHeader availability={availability}/>)
-    // return null;
     return (<DailyStaffSchedule dayIx={columnIx-1} availability={availability} staffShift={staffShift} shifts={shifts}/>)
 }
 
@@ -79,7 +163,6 @@ const ScheduleHeader = ({availability}) => {
 
     return (
         <div className="dailyScheduleContainer">
-            {/* {console.log("Availability1", availability)} */}
             {availability[0].peopleAvailability.map((personAvailability) => (
                 <div key={personAvailability.person._id} className="personDayBlock" style={bgColor(personAvailability)}>
                     <div>
@@ -87,7 +170,6 @@ const ScheduleHeader = ({availability}) => {
                     </div>
                     <div>
                         <div>{personAvailability.person.firstName} {personAvailability.person.lastName}</div>
-                        {/* <div>{personAvailability.person.userRole.name}</div> */}
                     </div>
                 </div>
             ))}
@@ -99,7 +181,6 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
     const [daySchedule, setDaySchedule] = useState([]);
 
     useEffect(() => {
-        // console.log("Top Availability", availability)
         const newAvailability = availability[dayIx].peopleAvailability.map((availPerson) => {
             const AvailShifts = availPerson.shiftAvailability.filter(shift => shift.isAvailable === true)
             const tempPerson = {
@@ -111,23 +192,16 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
             return tempPerson;
         })
         setDaySchedule(newAvailability);
-        // console.log("Top Availability Set Day", newAvailability)
     }, [availability]);
 
-    const setShift = (availShiftIx, personIx) => {
+    const setShift = (scheduledShifts, personIx) => {
         const newSchedule = [...daySchedule];
-        const shift = newSchedule[personIx].shiftAvail[availShiftIx];
-        newSchedule[personIx].scheduledShift[0] = {
-            shift: shift.shiftType
-        }
+        newSchedule[personIx].scheduledShift = scheduledShifts.filter((shift) => shift.scheduled);
         setDaySchedule(newSchedule);
-        console.log("Hi", daySchedule)
-        console.log("Person", newSchedule[personIx].person)
-        console.log("Shift Type", shift.shiftType)
-        const person = newSchedule[personIx].person;
-        const shiftTypeId = shift.shiftType;
 
-        staffShift(dayIx, person, shiftTypeId);
+        const person = newSchedule[personIx].person;
+
+        staffShift(dayIx, person, scheduledShifts);
     }
 
     function getPersonDayClassName(personSched) {
@@ -153,6 +227,7 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
 }
 
 const getPersonDayStatus = (personSched) => {
+    if (personSched.scheduledShift.length > 1) return "Multiple"
     if (personSched.scheduledShift.length > 0) return "Scheduled"
     if (personSched.timeoff.length > 0) return "Timeoff"
     if (personSched.shiftAvail.length > 0) return "Available"
@@ -162,14 +237,19 @@ const getPersonDayStatus = (personSched) => {
 const DailySchedulePerson = ({personSched, setShift, shifts}) => {
     const status = getPersonDayStatus(personSched);
 
+    if (status === "Multiple") return (
+        <>
+        <ChooseShiftsModel currentStatus="Multiple Shifts" personSched={personSched} setShift={setShift} shifts={shifts}/>
+        </>
+    )
     if (status === "Scheduled") return (
         <>
-        <FadeMenu availShifts={personSched.shiftAvail} setShift={setShift} shifts={shifts} currentStatus={shifts[personSched.scheduledShift[0].shift].name}/>
+        <ChooseShiftsModel currentStatus={shifts[personSched.scheduledShift[0].shift].name} personSched={personSched} setShift={setShift} shifts={shifts}/>
         </>
     )
     if (status === "Available") return (
         <>
-        <FadeMenu availShifts={personSched.shiftAvail} setShift={setShift} shifts={shifts} currentStatus="Available"/>
+        <ChooseShiftsModel currentStatus="Available" personSched={personSched} setShift={setShift} shifts={shifts}/>
         </>
     )
     if (status === "Timeoff") return (
@@ -231,16 +311,18 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
         }
     }, [date]);
 
+    const setDaySchedule = (dayIx, dayScheduleShifts) => {
+        const newDayScheduleShifts = [...dayScheduleShifts]; 
+        const newWeeklySchedule = {...weeklySchedule};
+        const newDay = {...newWeeklySchedule.days[dayIx]}
+        newDay.scheduleShifts = newDayScheduleShifts;
+        newWeeklySchedule.days[dayIx] = newDay;
+        setWeeklySchedule(newWeeklySchedule);
+    }
+
     useEffect(() => {
         console.log("Reloading")
     }, [weeklySchedule]);
-
-    // useEffect(() => {
-    //     console.log("Schedule Use Effect", schedule)
-    //     if (schedule.length === 0 && shifts.length > 0) {
-    //         setupNewWeekSchedule();
-    //     }
-    // }, [shifts]);
 
 
     function dayName(columnIx) {
@@ -264,12 +346,11 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
             <div id="needsDiv">
                 {week.map((day, columnIx) => (
                     <div key={columnIx} className="weekday-div">
-                        <NeedsDayHeader day={day} date={getDate(columnIx-1)} dayIx={columnIx-1} weeklySchedule={weeklySchedule} shifts={shifts} setWeeklySchedule={setWeeklySchedule} />
+                        <NeedsHeader day={day} date={getDate(columnIx)} columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts} setDaySchedule={setDaySchedule} />
                         <ColumnContentNeeds columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts}/>
                     </div>
                 ))}
             </div>
-            {/* <EditDailyNeeds dayIx="2" weeklySchedule={weeklySchedule} shifts={shifts} /> */}
 
 
             <h2>Schedule</h2>
@@ -284,83 +365,5 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
         </div>
     )
 }
-
-const NeedsDayHeader = ({day, date, dayIx, weeklySchedule, shifts, setWeeklySchedule}) => {
-    const [open, setOpen] = useState(false);
-    const [dayScheduleShifts, setDayScheduleShifts] = useState([]);
-
-    useEffect(() => {
-        if(dayIx >= 0) {
-            const dayScheduleShifts = weeklySchedule.days[dayIx].scheduleShifts.map((shift) => shift)
-            setDayScheduleShifts([...dayScheduleShifts])
-        }
-    }, [])
-  
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-  
-    const handleClose = () => {
-        setOpen(false);
-        const dayScheduleShifts = weeklySchedule.days[dayIx].scheduleShifts.map((shift) => shift)
-        setDayScheduleShifts([...dayScheduleShifts])
-    };
-
-    const handleSave = () => {
-        setOpen(false);
-        console.log("weeklySchedule", weeklySchedule)
-        const newWeeklySchedule = {...weeklySchedule};
-        newWeeklySchedule.days[dayIx].scheduleShifts = [...dayScheduleShifts]
-        setWeeklySchedule(newWeeklySchedule);
-    };
-
-    const onChange = (shiftIx, e) => {
-        const newScheduleShift = [...dayScheduleShifts];
-        newScheduleShift[shiftIx].peopleNeeded = e;
-        setDayScheduleShifts(newScheduleShift);
-        // console.log("Test", newScheduleShift)
-    }
-    
-    if(dayIx < 0) return null;
-    if(!dayScheduleShifts.length > 0) return null;
-  
-    return (
-      <div>
-        <span className="dayName" onClick={handleClickOpen}>{day}</span>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Change Staff Needed for {day}, {date}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Update the number of people you want to work for each shift
-            </DialogContentText>
-            {dayScheduleShifts.map((scheduleShift, shiftIx) => (
-                <div key={scheduleShift._id}>
-                    {shifts[scheduleShift.shift] && shifts[scheduleShift.shift].name} - 
-                    {shifts[scheduleShift.shift].role.name}
-                    <NumericInput name="defNum" className="inputField" label="Defalt Number" onChange={(e) => onChange(shiftIx, e)}
-                        value={scheduleShift.peopleNeeded} min={0} max={100}/>
-                </div>
-            ))}
-            {/* <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-            /> */}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
-  }
 
 export default Schedule;

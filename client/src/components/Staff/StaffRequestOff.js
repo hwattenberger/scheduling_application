@@ -29,10 +29,7 @@ const StaffRequestOff = () => {
     }
 
     function postTimeoff() {
-        axios.post(`http://localhost:5000/staff/${staffId}/timeoff`, {
-            withCredentials: true,
-            body: {date: date}
-            })
+        axios.post(`http://localhost:5000/staff/${staffId}/timeoff`, {date: date}, { withCredentials: true })
             .then(data =>  {
                 // console.log("Data", data)
                 setTimeoff([...timeoff, data.data])

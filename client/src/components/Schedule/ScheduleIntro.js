@@ -57,26 +57,72 @@ const ScheduleIntro = (props) => {
             .catch(e => console.log("Error Creating a Weekly Schedule", e))
     }
 
-    function staffShift(dayIx, person, shiftType) {
+    function staffShift(dayIx, person, shiftTypes) {
+
+
         const newSched = {...weeklySchedule};
         newSched.days[dayIx].scheduleShifts.forEach((scheduleShift) => {
-            console.log("For Each", shiftType, scheduleShift.shift)
-            if (shiftType === scheduleShift.shift) {
-                scheduleShift.peopleAssigned.push(person);
-                setUpdatedScheduleShifts([...updatedScheduleShifts, scheduleShift]);
+            shiftTypes.forEach((updatedShift) => {
+                if (updatedShift.shift === scheduleShift.shift) {
+                    if (updatedShift.scheduled) {
+                        //Add to array
+                        const isInArray = isInScheduledArray(scheduleShift.peopleAssigned, person._id);
+                        console.log("Yes?AA", isInArray, scheduleShift, person)
+                        if(!isInArray) { 
+                            scheduleShift.peopleAssigned.push(person);
+                            // console.log("Not scheduled, adding", scheduleShift)
+                            updateUpdateShiftsArray(scheduleShift);
+                        }
+                    }
+                    else {
+                        //remove from array
+                        const newSchedArray = scheduleShift.peopleAssigned.filter((scheduledPerson) => {
+                            if (!scheduledPerson._id) return (scheduledPerson !== person._id)
+                            else return (scheduledPerson._id !== person._id)
+                        })
+                        console.log("Get here?", newSchedArray)
+                        if (newSchedArray.length !== scheduleShift.peopleAssigned.length) {
+                            updateUpdateShiftsArray(scheduleShift);
+                            scheduleShift.peopleAssigned = newSchedArray;
+                            console.log("Scheduled, removing", scheduleShift)
+                        }
+                    }
+                }
+            })
+        })
+        setWeeklySchedule(newSched);
+    }
+
+    function updateUpdateShiftsArray(scheduleShift) {
+        let isFound = false;
+        const newUpdatedScheduleShifts = [...updatedScheduleShifts]
+        newUpdatedScheduleShifts.forEach((scheduledShift) => {
+            if(scheduledShift.shift === scheduleShift.shift) {
+                scheduledShift = scheduleShift;
+                isFound = true;
             }
         })
-        console.log("New Schedule", newSched);
-        setWeeklySchedule(newSched);
+        console.log("Found?", isFound, newUpdatedScheduleShifts)
+        if (isFound) setUpdatedScheduleShifts([...newUpdatedScheduleShifts]);
+        else setUpdatedScheduleShifts([...newUpdatedScheduleShifts, scheduleShift]);
+    }
+
+    function isInScheduledArray(peopleAssigned, personId) {
+        let isInArray = false;
+        peopleAssigned.forEach((person) => {
+            if (person._id === personId) {
+                isInArray = true;
+                return isInArray;
+            }
+        })
+
+        return isInArray;
     }
 
     function saveSchedule() {
         console.log("Safe", updatedScheduleShifts)
         updatedScheduleShifts.forEach((scheduleShift) => {
-            axios.put(`http://localhost:5000/scheduleShift/${scheduleShift._id}`, {
-                withCredentials: true,
-                body: scheduleShift
-            })
+            axios.put(`http://localhost:5000/scheduleShift/${scheduleShift._id}`, scheduleShift, { withCredentials: true})
             .then(result => {
                 console.log("Saved successfully");
                 setUpdatedScheduleShifts([]);
