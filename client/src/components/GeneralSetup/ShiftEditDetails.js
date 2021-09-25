@@ -1,24 +1,14 @@
-import axios from "axios";
 import React, { useState } from "react";
+import { Edit } from '@material-ui/icons';
 
-import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
+import NumericInput from 'react-numeric-input';
+
+import { TextField, FormControl, Select, InputLabel, MenuItem, Button } from '@material-ui/core'
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
-
-const newShiftTypeObject = {
-    name: "",
-    role: {
-        name: "Unknown",
-        _id: ""
-    },
-    defNum: 0,
-    endTime: "",
-    startTime: ""
-}
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -26,24 +16,21 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const NewShiftType = ({setShifts, shifts, roles}) => {
+const ShiftTypeDetail = ({shiftTypeInfo, roles, onShiftSave}) => {
     const classes = useStyles();
-    const [shiftType, setShiftType] = useState(newShiftTypeObject);
-    
-    function createShiftType(e) {
-        e.preventDefault();
-        console.log("SHIFT TYPE NAME", shiftType.name)
-        if (!shiftType.name) return "";
 
-        axios.post(`http://localhost:5000/shiftTypes`, { shiftType: shiftType }, {withCredentials: true})
-            .then(data => {
-                setShiftType(newShiftTypeObject);
-                setShifts([...shifts, data.data] )
-            })
+    const editedShiftType = {
+        name: shiftTypeInfo.name || "",
+        role: shiftTypeInfo.role || "",
+        defNum: shiftTypeInfo.defNum || "",
+        startTime: shiftTypeInfo.startTime || "",
+        endTime: shiftTypeInfo.endTime || ""
     }
 
+    const [shiftType, setShiftType] = useState(editedShiftType);
+
     const handleInputChange = (e) => {
-        setShiftType({...shiftType,[e.target.name]:e.target.value });
+        setShiftType({ ...shiftType,[e.target.name]:e.target.value });
     }
 
     const handleInputChangeRole = (e) => {
@@ -55,10 +42,19 @@ const NewShiftType = ({setShifts, shifts, roles}) => {
 
         setShiftType({ ...shiftType,[e.target.name]:newRole});
     }
-    
-    return (
-        <div id="createShiftDiv">
-            <h3>Create New Shift</h3>
+
+    const handleSaveShift = () => {
+        onShiftSave(shiftType);
+    }
+
+    if (!roles) {
+        return (<p>Please make a role first before creating shifts</p>)
+    }
+
+    if (shiftType) {
+        return (
+            <div>
+                <h3>Edit Shift Information</h3>
                 <div>
                     <TextField name="name" className="inputField" label="Shift Name" value={shiftType.name} onChange={handleInputChange} />
                 </div>
@@ -84,9 +80,10 @@ const NewShiftType = ({setShifts, shifts, roles}) => {
                 <div>
                     <TextField name="endTime" className="inputField" label="End Time" value={shiftType.endTime} onChange={handleInputChange} />
                 </div>
-                <Button variant="outlined" id="saveStaffBtn" onClick={createShiftType}>Save</Button>
-        </div>
-    )
+                <Button variant="outlined" id="saveStaffBtn" onClick={handleSaveShift}>Save</Button>
+            </div>
+        )
+    }
 }
 
-export default NewShiftType;
+export default ShiftTypeDetail;

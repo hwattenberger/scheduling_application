@@ -2,12 +2,12 @@ import React, {useState, useEffect} from "react"
 import dayjs from 'dayjs';
 import axios from "axios";
 import DatePickerSchedule from "./DatePickerSchedule"
-import Schedule from "./Schedule"
+import Schedule from "./PeopleSchedule/Schedule"
 import Button from '@material-ui/core/Button';
 import './Schedule.css';
 
 
-const ScheduleIntro = (props) => {
+const ScheduleIntro = () => {
     const [date, setDate] = useState(new Date());
     const [weeklySchedule, setWeeklySchedule] = useState({});
     const [noSchedule, setNoSchedule] = useState(null);
@@ -20,12 +20,12 @@ const ScheduleIntro = (props) => {
 
     useEffect(() => {
         setNoSchedule(null);
+        setUpdatedScheduleShifts([]);
         pullWeeklySchedule();
     }, [date]);
 
-    useEffect(() => {
-        console.log("ScheduleIntroTest")
-    }, [weeklySchedule]);
+    // useEffect(() => {
+    // }, [weeklySchedule]);
 
     function pullWeeklySchedule() {
         axios.get('http://localhost:5000/scheduleWeek', {
@@ -36,18 +36,13 @@ const ScheduleIntro = (props) => {
                 setWeeklySchedule(data.data)
                 if(data.data === null) setNoSchedule(true);
                 else setNoSchedule(false);
-                console.log("Weekly Schedule", data.data)
-                // console.log("Schedule", schedule)
             })
             .catch(e => console.log("Error Pulling Weekly Schedule", e))
     }
 
     function onClickCreateSchedule() {
         setNoSchedule(null);
-        axios.post(`http://localhost:5000/scheduleWeek`, {
-            withCredentials: true,
-            body: {date}
-        })
+        axios.post(`http://localhost:5000/scheduleWeek`, {date}, {withCredentials: true})
             .then(data => {
                 console.log("Did it work to create a schedule?", data.data);
                 setWeeklySchedule(data.data);
@@ -138,7 +133,7 @@ const ScheduleIntro = (props) => {
                 {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create Schedule</Button>}
             </div>
             {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift} setWeeklySchedule={setWeeklySchedule}/>}
-            {updatedScheduleShifts.length > 0 && <button onClick={saveSchedule}>Save Changes</button>}
+            {updatedScheduleShifts.length > 0 && <Button id="saveChgBtn" variant="outlined" onClick={saveSchedule}>Save Changes</Button>}
         </div>
     )
 }

@@ -5,9 +5,9 @@ import { myContext } from '../../Context'
 import Button from '@material-ui/core/Button'
 import './Navbar.css';
 
-const NavBar = () => {
-    const userObject = useContext(myContext);
-    console.log("Nav user", userObject)
+const NavBar = ({userObject}) => {
+    // const userObject = useContext(myContext);
+    // console.log("Nav user", userObject)
 
     function logout() {
         axios.get('http://localhost:5000/auth/logout', {withCredentials: true})

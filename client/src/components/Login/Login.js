@@ -1,6 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { Redirect, useLocation } from "react-router-dom";
 import { Button, TextField } from '@material-ui/core'
+import { myContext } from '../../Context'
 import googleImg from '../../images/google-logo.png'
 import './LoginRegister.css'
 
@@ -9,6 +11,14 @@ const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    const { state } = useLocation();
+    const { from } = state || { from: { pathname: "/" } };
+    const userObject = useContext(myContext);
+
+    useEffect(() => {
+    }, [userObject]);
+
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -40,6 +50,10 @@ const Login = (props) => {
 
     const googleLogin = () => {
         window.open("http://localhost:5000/auth/google", "_self");
+    }
+
+    if (userObject && userObject.isActive && from) {
+        return <Redirect to={from} />;
     }
 
     return (

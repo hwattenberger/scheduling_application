@@ -1,4 +1,3 @@
-import './App.css';
 import React, { useState, useContext } from "react";
 import Login from "./components/Login/Login";
 import { myContext } from './Context'
@@ -15,16 +14,12 @@ import Landing from "./components/MainPage/Landing";
 
 function App() {
   // const [loginUser, setLoginUser] = useState(null);
-  // const userObject = useContext(myContext);
-
+  const userObject = useContext(myContext);
+  console.log("Test", userObject)
   return (
     <BrowserRouter>
-      <NavBar />
+      <NavBar userObject={userObject}/>
       <div className="App">
-        {/* Login User: {userObject && userObject._id} */}
-        {/* {userObject && <h1> Logged in!</h1>} */}
-        {/* {!userObject && <Login setLoginUser={setLoginUser}/>} */}
-
       <Switch>
         <Route path="/login">
           <Login />
@@ -32,21 +27,21 @@ function App() {
         <Route path="/register">
           <Register />
         </Route>
-        <Route path={`/staff/:staffId/schedule`}>
+        <PrivateRoute path={`/staff/:staffId/schedule`}>
           <UserScheduledShifts />
-        </Route>
-        <Route path={`/staff/:staffId`}>
+        </PrivateRoute>
+        <PrivateRoute path={`/staff/:staffId`}>
           <StaffMember />
-        </Route>
-        <Route path="/staff">
+        </PrivateRoute>
+        <PrivateRoute path="/staff">
           <Staff />
-        </Route>
-        <Route path="/generalSetup">
+        </PrivateRoute>
+        <PrivateRoute path="/generalSetup">
           <GeneralSetup />
-        </Route>
-        <Route path="/schedule">
+        </PrivateRoute>
+        <PrivateRoute path="/schedule">
           <ScheduleIntro />
-        </Route>
+        </PrivateRoute>
         <Route path="/">
           <Landing/>
         </Route>
@@ -56,10 +51,10 @@ function App() {
   );
 }
 
+
 function PrivateRoute({ children, ...rest }) {
   const userObject = useContext(myContext);
-  console.log("User", userObject)
-
+  
   return (
     <Route
       {...rest}
@@ -69,7 +64,7 @@ function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: "/",
+              pathname: "/login",
               state: { from: location }
             }}
           />

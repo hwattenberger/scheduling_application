@@ -25,6 +25,18 @@ module.exports.getStaffMember = async (req, res) => {
 
 module.exports.putStaffMember = async (req, res) => {
     const {staffId} = req.params;
+    const updatedUser = req.body.updatedStaff;
+    
+    if (updatedUser.userRole === "") updatedUser.userRole = undefined;
+    
+    const staffMember = await User.findByIdAndUpdate(staffId, updatedUser, {new: true, omitUndefined:true}).populate({path:'userRole'});
+
+    staffMember.password = undefined;
+    res.json(staffMember)
+}
+
+module.exports.putStaffMemberWImage = async (req, res) => {
+    const {staffId} = req.params;
     const updatedUser = JSON.parse(req.body.userInput);
     const updatedImg = req.file;
 
@@ -41,10 +53,6 @@ module.exports.putStaffMember = async (req, res) => {
     }
 
     const staffMember = await User.findByIdAndUpdate(staffId, updatedUser, {new: true, omitUndefined:true});
-    // console.log("Staff", req.file);
-    // console.log("Staff Query", staffMember);
-    // console.log("Again", updatedUser.firstName)
-    // console.log("Again2", updatedUser.isAdmin)
 
     staffMember.password = undefined;
     res.json(staffMember)
@@ -74,7 +82,7 @@ module.exports.getUserAvailability = async (req, res) => {
 
 module.exports.putUserAvailability = async (req, res) => {
     const {staffId} = req.params;
-    const updatedAvailability = req.body.body;
+    const updatedAvailability = req.body.userWeeklyAvail;
 
     console.log("Updated", updatedAvailability)
 

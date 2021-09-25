@@ -19,12 +19,12 @@ module.exports.getScheduleWeek = async (req, res) => {
 }
 
 module.exports.postScheduleWeek = async (req, res) => {
-    const {date} = req.body.body;
+    const {date} = req.body;
     const formattedDate = dayjs(date).format('YYYY-MM-DD')
     const sundayOfWeek = dayjs(formattedDate).day(0);
     const shifts = await ShiftType.find({});
 
-    // console.log("Dates", date, formattedDate, sundayOfWeek)
+    console.log("HI", req.body)
 
     const newScheduleWeekObj = {
         firstDayOfWeek: sundayOfWeek,
@@ -44,7 +44,6 @@ module.exports.postScheduleWeek = async (req, res) => {
             await newShiftForDay.save();
             shiftArr.push(newShiftForDay);
         }
-        // console.log("Day shifts", shiftArr);
 
         newScheduleWeekObj.days[i] = {
             date: daysDate,

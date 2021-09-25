@@ -1,3 +1,7 @@
+#saveChgBtn {
+    margin-top: 5px;
+}
+
 #mainSchedule h2 {
     margin-bottom: 0;
 }
@@ -6,6 +10,7 @@
 #needsDiv {
     display: flex;
     justify-content: space-between;
+    /* flex-wrap: wrap; */
 }
 
 #mainWeekDiv .weekday-div,
@@ -98,6 +103,22 @@
 #mainWeekDiv .dailyScheduleContainer,
 #needsDiv .dailyNeedsContainer {
     width: 100%;
+    min-width: 110px;
+}
+
+/* #mainWeekDiv .weekday-div {
+    min-width: 100px;
+} */
+
+.dailyScheduleContainer .dayPersonAvailableSlot {
+    width: 100%;
+    height: 100%;
+}
+
+.dailyScheduleContainer .dragOver {
+    /* color: green; */
+    /* background-color: blue; */
+    border: 1px solid black;
 }
 
 #mainWeekDiv .Unavailable {

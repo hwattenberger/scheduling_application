@@ -57,10 +57,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
     function putWeeklyAvailability(e) {
         e.preventDefault();
 
-        axios.put(`http://localhost:5000/staff/${staffId}/available`, { 
-            withCredentials: true,
-            body: userWeeklyAvail
-        })
+        axios.put(`http://localhost:5000/staff/${staffId}/available`, {userWeeklyAvail}, {withCredentials: true})
             .then(data => setShowComplete(true))
             .catch(e => console.log("Error - Couldn't get weekly schedule", e))
     }

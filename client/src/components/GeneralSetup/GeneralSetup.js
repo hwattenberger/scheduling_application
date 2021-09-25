@@ -1,15 +1,21 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Add, Remove } from '@material-ui/icons';
+
 import NewShiftType from "./NewShiftType";
-import ShiftTypeDetail from "./ShiftTypeDetail";
+import ShiftRow from "./ShiftRow"
+
+import Snackbar from '@material-ui/core/Snackbar';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@material-ui/core';
+
 import './GeneralSetup.css';
 
 
-const GeneralSetup = (props) => {
+const GeneralSetup = () => {
     const [shifts, setShifts] = useState([]);
     const [addNewShift, setAddNewShift] = useState(false);
     const [roles, setRoles] = useState([]);
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     useEffect(() => {
         getShifts();
@@ -37,36 +43,52 @@ const GeneralSetup = (props) => {
         return <Add onClick={newShiftClick} />
     } 
 
-    function onShiftSave(id, ix, updatedShift) {
-        // console.log("Edit shift", id, ix, updatedShift)
+    function handleSnackClose() {
+        setShowSnackbar(false);
+    }
 
-        axios.put(`http://localhost:5000/shiftTypes/${id}`, {
-            withCredentials: true,
-            body: updatedShift
-        })
+    function onShiftSave(id, ix, updatedShift) {
+        axios.put(`http://localhost:5000/shiftTypes/${id}`, { updatedShift: updatedShift }, {withCredentials: true})
             .then(result => {
-                // console.log("WoW", result)
                 const newShift = [...shifts];
                 newShift[ix] = result.data;
                 setShifts(newShift);
+                setShowSnackbar(true);
             })
     }
-
 
     return (
         <div id="generalSetup">
             <h2>General Setup</h2>
-
-            <div>
-                <h3>Shifts:</h3>
-                {shifts.map((shift, ix) => (
-                    <ShiftTypeDetail key={shift._id} shiftTypeInfo={shift} roles={roles} onShiftSave={onShiftSave} ix={ix}/>
-                ))}
-            </div>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="a dense table">
+                    <TableHead id="tableHeaderBlue">
+                    <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>Shift Name</TableCell>
+                        <TableCell>Role</TableCell>
+                        <TableCell>Default People Needed</TableCell>
+                        <TableCell>Start Time</TableCell>
+                        <TableCell>End Time</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {shifts.map((shift, ix) => (
+                        <ShiftRow key={shift._id} shiftTypeInfo={shift} roles={roles} onShiftSave={(updatedShift) => onShiftSave(shift._id, ix, updatedShift)}/>
+                    ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
             <div>
                 <ShowHide />
                 {(addNewShift) && <NewShiftType shifts={shifts} setShifts={setShifts} roles={roles}/>}
             </div>
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={showSnackbar}
+                onClose={handleSnackClose}
+                message="Saved Updates"
+                key={'top' + 'center'} />
         </div>
     );
 }

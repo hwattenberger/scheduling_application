@@ -1,4 +1,3 @@
-
 form {
     display: inherit;
 }
@@ -9,6 +8,10 @@ form {
 
 .inputRole {
     min-width: 220px;
+}
+
+#tableHeaderBlue {
+    background-color: var(--main-divs-color);
 }
 
 .inputField {

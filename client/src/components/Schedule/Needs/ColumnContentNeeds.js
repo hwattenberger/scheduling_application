@@ -1,12 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Badge from '@material-ui/core/Badge';
 
 const ShiftDetail = ({dayIx, scheduleShift, shifts}) => {
 
     const dragStart = (e, scheduleShift) => {
-        e.dataTransfer.setData('object', JSON.stringify(scheduleShift._id));
-        e.dataTransfer.setData('dayIx', dayIx);
-        console.log("Drag Start", dayIx, scheduleShift._id);
+        e.dataTransfer.setData('shiftType', scheduleShift.shift);
     }
 
     const bgColor = (shift) => {
@@ -39,7 +37,9 @@ const DailyNeeds = ({dayIx, weeklySchedule, shifts}) => {
 }
 
 const ColumnContentNeeds = ({columnIx, weeklySchedule, shifts}) => {
-    // return null;
+    useEffect(() => {
+        }, [shifts]);
+    
     if(!shifts || !weeklySchedule) return null;
     if (columnIx === 0) return (<NeedsHeader weeklySchedule={weeklySchedule} shifts={shifts}/>)
     return (<DailyNeeds dayIx={columnIx-1} weeklySchedule={weeklySchedule} shifts={shifts}/>)

@@ -73,7 +73,7 @@ const StaffMember = () => {
             profilePhoto: user.profilePhoto
         }))
 
-        axios.put(`http://localhost:5000/staff/${staffId}`, formData, {
+        axios.put(`http://localhost:5000/staff/${staffId}/photo`, formData, {
             withCredentials: true,
             headers: {
                 'Content-type': 'multipart/form-data'
@@ -118,10 +118,6 @@ const StaffMember = () => {
                         </Button>
                         {newPhoto && newPhoto.name}
                     </label> 
-                    {/* <label>
-                        <input name="profilePhoto" label="Image" type="file" onChange={handleFileChange} />
-                        <Button>New Image</Button>
-                    </label> */}
                 </div>
                 <Button variant="outlined" type="submit">Update</Button>
             </form>

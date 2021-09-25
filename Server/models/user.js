@@ -24,7 +24,7 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'UserRole'
     },
-    active: Boolean,
+    isActive: Boolean,
     hourlyPay: Number,
     isAdmin: Boolean
 });

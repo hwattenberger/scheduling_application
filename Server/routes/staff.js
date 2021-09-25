@@ -13,7 +13,10 @@ router.route('/')
 
 router.route('/:staffId')
     .get(isLoggedIn, staffs.getStaffMember)
-    .put(isLoggedIn, upload.single('profilePhoto'), staffs.putStaffMember)
+    .put(isLoggedIn, staffs.putStaffMember)
+
+router.route('/:staffId/photo')
+    .put(isLoggedIn, upload.single('profilePhoto'), staffs.putStaffMemberWImage)
 
 router.route('/:staffId/upcomingShifts')
     .get(isLoggedIn, staffs.getUpcomingShifts)
