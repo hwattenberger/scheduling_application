@@ -25,7 +25,7 @@ const UserScheduledShifts = () => {
 
     return (
         <div>
-            <h2>My Shifts</h2>
+            <h2>My Upcoming Shifts</h2>
             {userSchedule.map((oneSched) => (
                 <div key={oneSched._id}>{oneSched.date} - {oneSched.shift.name}</div>
             ))}

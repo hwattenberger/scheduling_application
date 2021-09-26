@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Login from "./components/Login/Login";
-import { myContext } from './Context'
+import { LoginUserStateContext } from './Context/userAuth/Context'
 import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
 import Staff from "./components/Staff/Staff";
 import StaffMember from "./components/Staff/StaffMember";
@@ -13,20 +13,18 @@ import Register from "./components/Login/Register";
 import Landing from "./components/MainPage/Landing";
 
 function App() {
-  // const [loginUser, setLoginUser] = useState(null);
-  const userObject = useContext(myContext);
-  console.log("Test", userObject)
+
   return (
     <BrowserRouter>
-      <NavBar userObject={userObject}/>
+      <NavBar/>
       <div className="App">
       <Switch>
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="/register">
+        <PrivateRoute path="/register">
           <Register />
-        </Route>
+        </PrivateRoute>
         <PrivateRoute path={`/staff/:staffId/schedule`}>
           <UserScheduledShifts />
         </PrivateRoute>
@@ -53,13 +51,15 @@ function App() {
 
 
 function PrivateRoute({ children, ...rest }) {
-  const userObject = useContext(myContext);
+  const {loginUserInfo} = useContext(LoginUserStateContext);
   
+  if (loginUserInfo.loading || (loginUserInfo.errorMessage !== "Please Login" && !loginUserInfo.userDetails)) return "Loading...";
+
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        userObject ? (
+        loginUserInfo.userDetails ? (
           children
         ) : (
           <Redirect

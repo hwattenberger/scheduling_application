@@ -40,7 +40,6 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
 
     return (
         <div className="dailyScheduleContainer">
-            {console.log("Daily Schedule", daySchedule)}
             {daySchedule.map((personSched, personIx) => (
                 <div key={personSched.person._id} className={getPersonDayClassName(personSched)}>
                     <DailySchedulePerson personSched={personSched} shifts={shifts} setShift={(availShiftIx) => setShift(availShiftIx,personIx)} />

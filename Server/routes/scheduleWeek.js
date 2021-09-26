@@ -7,5 +7,7 @@ router.route('/')
     .get(isLoggedIn, scheduleWeeks.getScheduleWeek)
     .post(isAdmin, scheduleWeeks.postScheduleWeek)
 
+router.route('/copy')
+    .post(isAdmin, scheduleWeeks.copyPreviousWeek)
 
 module.exports = router;

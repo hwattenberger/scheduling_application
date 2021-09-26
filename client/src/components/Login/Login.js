@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
-import { Redirect, useLocation } from "react-router-dom";
 import { Button, TextField } from '@material-ui/core'
-import { myContext } from '../../Context'
+import { LoginUserStateContext } from '../../Context/userAuth/Context'
 import googleImg from '../../images/google-logo.png'
 import './LoginRegister.css'
 
@@ -10,15 +9,8 @@ import './LoginRegister.css'
 const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-
-    const { state } = useLocation();
-    const { from } = state || { from: { pathname: "/" } };
-    const userObject = useContext(myContext);
-
-    useEffect(() => {
-    }, [userObject]);
-
+    const {loginUserInfo, dispatch} = useContext(LoginUserStateContext);
+    const {errorMessage} = loginUserInfo;
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -28,21 +20,28 @@ const Login = (props) => {
         })
     })
 
-    async function loginUser(credentials) {
-        return await axios.post('http://localhost:5000/auth/login', JSON.stringify(credentials),{
+    async function loginUser(loginPayload) {
+        dispatch({type: 'REQUEST_LOGIN'});
+        return await axios.post('http://localhost:5000/auth/login', JSON.stringify(loginPayload),{
             headers: {'Content-Type': 'application/json'}, withCredentials: true
         })
-            .then(data => window.open("/", "_self"))
+            .then(data => {
+                dispatch({type: 'LOGIN_SUCCESS', payload: {
+                    isAdmin: data.data.isAdmin,
+                    id: data.data._id
+                }});
+                window.location.href = "/";
+            })
             .catch(e => {
-                if (e.response.data && e.response.data.message) setError(e.response.data.message)
-                else setError("Incorrect username or password")
+                if (e.response.data && e.response.data.message) dispatch({ type: 'LOGIN_ERROR', error: e.response.data.message })
+                else dispatch({ type: 'LOGIN_ERROR', error: "Incorrect username or password" })
             })
     }
 
     const getError = () => {
-        if (error) return (
+        if (errorMessage) return (
             <div id="errorDiv">
-                {error}
+                {errorMessage}
             </div>
             );
         return null;
@@ -50,10 +49,6 @@ const Login = (props) => {
 
     const googleLogin = () => {
         window.open("http://localhost:5000/auth/google", "_self");
-    }
-
-    if (userObject && userObject.isActive && from) {
-        return <Redirect to={from} />;
     }
 
     return (

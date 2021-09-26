@@ -19,7 +19,7 @@ const StaffEditDetails = ({person, roles, editStaff}) => {
         email: person.email || "",
         isAdmin: person.isAdmin || false,
         userRole: person.userRole && person.userRole._id || "",
-        isActive: person.isActive || true,
+        isActive: ( person.isActive == null ? true : person.isActive),
         hourlyPay: person.hourlyPay || ""
     };
 
@@ -30,7 +30,6 @@ const StaffEditDetails = ({person, roles, editStaff}) => {
     }
 
     const handleCheckedChange = (e) => {
-        console.log("Test", e.target.checked)
         setStaffInfo({ ...staffInfo,[e.target.name]:e.target.checked });
     }
 

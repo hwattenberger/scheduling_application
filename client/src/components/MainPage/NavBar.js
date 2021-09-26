@@ -1,17 +1,21 @@
 import React, { useContext } from "react";
 import axios from "axios";
-import { myContext } from '../../Context'
+import { LoginUserStateContext } from '../../Context/userAuth/Context'
+import {Link} from 'react-router-dom'
+
 
 import Button from '@material-ui/core/Button'
 import './Navbar.css';
 
-const NavBar = ({userObject}) => {
-    // const userObject = useContext(myContext);
+const NavBar = () => {
+    const {loginUserInfo, dispatch} = useContext(LoginUserStateContext);
+    const userDetails = loginUserInfo.userDetails;
     // console.log("Nav user", userObject)
 
     function logout() {
         axios.get('http://localhost:5000/auth/logout', {withCredentials: true})
             .then(data =>  {
+                dispatch({type: 'LOGOUT'});
                 window.location.reload(true);
             })
             .catch(e => console.log("Error Logging Out", e))
@@ -20,37 +24,37 @@ const NavBar = ({userObject}) => {
     return (
         <div id="navbar">
             <div id="navbar-logo">
-                <a href="/">MySchedule</a>
+                <Link to="/">MySchedule</Link>
             </div>
-            <NavBarLinks userObject={userObject}/>
+            <NavBarLinks userDetails={userDetails}/>
             <div id="navbar-login">
-                {!userObject && <a href="/login"><Button variant="outlined">Login</Button></a>}
-                {!userObject && <a href="/register"><Button variant="outlined">Create Account</Button></a>}
-                {userObject && <Button variant="outlined" onClick={logout}>Logout</Button>}
+                {!userDetails && <Link to="/login"><Button variant="outlined">Login</Button></Link>}
+                {!userDetails && <Link to="/register"><Button variant="outlined">Create Account</Button></Link>}
+                {userDetails && <Button variant="outlined" onClick={logout}>Logout</Button>}
             </div>
         </div>
     )
 }
 
 
-const NavBarLinks = ({userObject}) => {
+const NavBarLinks = ({userDetails}) => {
     // const userObject = useContext(myContext);
     // console.log("Nav user", userObject)
 
-    if(!userObject) return null;
+    if(!userDetails) return null;
 
-    if(userObject.isAdmin) return (
+    if(userDetails.isAdmin) return (
         <div id="navbar-links">
-            <div><a href="/schedule">Schedule</a></div>
-            <div><a href="/generalSetup">Settings</a></div>
-            <div><a href="/staff">Staff</a></div>
+            <div><Link to="/schedule">Schedule</Link></div>
+            <div><Link to="/generalSetup">Settings</Link></div>
+            <div><Link to="/staff">Staff</Link></div>
         </div>
     )
 
     return (
         <div id="navbar-links">
-            <div><a href={`/staff/${userObject._id}/schedule`}>My Schedule</a></div>
-            <div><a href={`/staff/${userObject._id}`}>Settings</a></div>
+            <div><Link to={`/staff/${userDetails.id}/schedule`}>My Schedule</Link></div>
+            <div><Link to={`/staff/${userDetails.id}`}>Settings</Link></div>
         </div>
     )
 }

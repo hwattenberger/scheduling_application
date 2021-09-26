@@ -34,7 +34,6 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
                     if (isMounted) setShifts(tempShiftObj)
                     tempGotInfo++;
                     if (isMounted) setGotInfo(tempGotInfo);
-                    console.log("ShiftsHere", tempShiftObj)
                 })
                 .catch(e => console.log("Error Staff", e))
         }
@@ -48,7 +47,6 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
                     if (isMounted) setWeeklyAvailability(data.data);
                     tempGotInfo++;
                     if (isMounted) setGotInfo(tempGotInfo);
-                    console.log("Availability", data.data)
                 })
                 .catch(e => console.log("Error pulling availability", e))
         }
@@ -63,9 +61,9 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
         setWeeklySchedule(newWeeklySchedule);
     }
 
-    useEffect(() => {
-        console.log("Reloading")
-    }, [weeklySchedule]);
+    // useEffect(() => {
+    //     console.log("Reloading")
+    // }, [weeklySchedule]);
 
 
     function dayName(columnIx) {

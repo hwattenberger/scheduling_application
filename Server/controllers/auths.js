@@ -5,7 +5,9 @@ const bcrypt = require("bcryptjs");
 
 module.exports.login = (req, res) => {
   try {
-    res.json({message: "Successfully logged in!"})
+    const returnUser = req.user;
+    returnUser.password = undefined;
+    res.json(returnUser)
   }
   catch (error) {
     res.status(500).json({message: "ERROR", error: error.message})
@@ -20,6 +22,10 @@ module.exports.authenticate = (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({ message: 'Try logging in again'});
+    }
+
+    if(!user.isActive) {
+      return res.status(401).json({ message: 'User is inactive'});
     }
 
     req.logIn(user, function(err) {
