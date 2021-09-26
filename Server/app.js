@@ -88,7 +88,7 @@ app.use('/scheduleShift', scheduleShiftRoutes);
 app.use('/staffAvailabilityDate', staffAvailabilityRoutes);
 
 app.get('/testing', (req, res) => {
-    app.send("Success");
+    res.send("Success");
 })
 app.get('/', (req, res) => {
     console.log("Main page", req.session)
