@@ -60,16 +60,18 @@ const sessionConfig = {
     store,
     name: 'session',
     secret: secret,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        sameSite:'none'
+        sameSite:'none',
+        secure: true
     }
 };
 
+app.set("trust proxy", 1);
 app.use(session(sessionConfig));
 
 require("./utils/local");
