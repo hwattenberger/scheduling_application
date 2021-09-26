@@ -29,13 +29,14 @@ const useStyles = makeStyles((theme) => ({
 const NewShiftType = ({setShifts, shifts, roles}) => {
     const classes = useStyles();
     const [shiftType, setShiftType] = useState(newShiftTypeObject);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
     
     function createShiftType(e) {
         e.preventDefault();
         console.log("SHIFT TYPE NAME", shiftType.name)
         if (!shiftType.name) return "";
 
-        axios.post(`http://localhost:5000/shiftTypes`, { shiftType: shiftType }, {withCredentials: true})
+        axios.post(`${baseURL}/shiftTypes`, { shiftType: shiftType }, {withCredentials: true})
             .then(data => {
                 setShiftType(newShiftTypeObject);
                 setShifts([...shifts, data.data] )

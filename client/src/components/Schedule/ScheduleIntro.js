@@ -17,6 +17,7 @@ const ScheduleIntro = () => {
     const [updatedScheduleShifts, setUpdatedScheduleShifts] = useState([]);
     const [snackBarMsg, setSnackBarMsg] = useState(null);
     const [Prompt, setDirty, setClean] = useUnsavedUpdatesWarning();
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     function formatDatetoJustDate() {
         const formattedDate = dayjs(date).format('YYYY-MM-DD');
@@ -31,7 +32,7 @@ const ScheduleIntro = () => {
 
 
     function pullWeeklySchedule() {
-        axios.get('http://localhost:5000/scheduleWeek', {
+        axios.get(`${baseURL}/scheduleWeek`, {
             withCredentials: true,
             params: {date: date}
             })
@@ -45,7 +46,7 @@ const ScheduleIntro = () => {
 
     function onClickCreateSchedule() {
         setNoSchedule(null);
-        axios.post(`http://localhost:5000/scheduleWeek`, {date}, {withCredentials: true})
+        axios.post(`${baseURL}/scheduleWeek`, {date}, {withCredentials: true})
             .then(data => {
                 setWeeklySchedule(data.data);
                 if(data.data) setNoSchedule(false);
@@ -56,7 +57,7 @@ const ScheduleIntro = () => {
 
     function onClickCopySchedule() {
         setNoSchedule(null);
-        axios.post(`http://localhost:5000/scheduleWeek/copy`, {date}, {withCredentials: true})
+        axios.post(`${baseURL}/scheduleWeek/copy`, {date}, {withCredentials: true})
             .then(data => {
                 setWeeklySchedule(data.data);
                 if(data.data) setNoSchedule(false);
@@ -133,7 +134,7 @@ const ScheduleIntro = () => {
 
     function saveSchedule() {
         updatedScheduleShifts.forEach((scheduleShift) => {
-            axios.put(`http://localhost:5000/scheduleShift/${scheduleShift._id}`, scheduleShift, { withCredentials: true})
+            axios.put(`${baseURL}/scheduleShift/${scheduleShift._id}`, scheduleShift, { withCredentials: true})
             .then(result => {
                 setSnackBarMsg("Saved");
                 setUpdatedScheduleShifts([]);

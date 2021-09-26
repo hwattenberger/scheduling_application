@@ -16,6 +16,7 @@ const GeneralSetup = () => {
     const [addNewShift, setAddNewShift] = useState(false);
     const [roles, setRoles] = useState([]);
     const [showSnackbar, setShowSnackbar] = useState(false);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         getShifts();
@@ -23,13 +24,13 @@ const GeneralSetup = () => {
     }, []);
 
     function getShifts() {
-        axios.get('http://localhost:5000/shiftTypes', {withCredentials: true})
+        axios.get(`${baseURL}/shiftTypes`, {withCredentials: true})
             .then(data => setShifts(data.data))
             .catch(e => console.log("Error Roles", e))
     }
 
     function getRoles() {
-        axios.get('http://localhost:5000/userRole', {withCredentials: true})
+        axios.get(`${baseURL}/userRole`, {withCredentials: true})
             .then(data => setRoles(data.data))
             .catch(e => console.log("Error Roles", e))
     }
@@ -48,7 +49,7 @@ const GeneralSetup = () => {
     }
 
     function onShiftSave(id, ix, updatedShift) {
-        axios.put(`http://localhost:5000/shiftTypes/${id}`, { updatedShift: updatedShift }, {withCredentials: true})
+        axios.put(`${baseURL}/shiftTypes/${id}`, { updatedShift: updatedShift }, {withCredentials: true})
             .then(result => {
                 const newShift = [...shifts];
                 newShift[ix] = result.data;

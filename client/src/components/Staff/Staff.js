@@ -14,7 +14,7 @@ const Staff = () => {
     const [roles, setRoles] = useState([]);
     const [filterRole, setFilterRole] = useState("");
     const [showSnackbar, setShowSnackbar] = useState(false);
-
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         getStaff();
@@ -22,12 +22,12 @@ const Staff = () => {
     }, []);
 
     function getStaff() {
-        axios.get('http://localhost:5000/staff', {withCredentials: true})
+        axios.get(`${baseURL}/staff`, {withCredentials: true})
             .then(data => setStaff([...data.data]))
     }
 
     function editStaff(id, ix, updatedStaff) {
-        axios.put(`http://localhost:5000/staff/${id}`, { updatedStaff: updatedStaff }, {withCredentials: true})
+        axios.put(`${baseURL}/staff/${id}`, { updatedStaff: updatedStaff }, {withCredentials: true})
             .then(result => {
                 const newStaff = [...staff];
                 newStaff[ix] = result.data;
@@ -37,7 +37,7 @@ const Staff = () => {
     }
 
     function getRoles() {
-        axios.get('http://localhost:5000/userRole', {withCredentials: true})
+        axios.get(`${baseURL}/userRole`, {withCredentials: true})
             .then(data => setRoles(data.data))
     }
 

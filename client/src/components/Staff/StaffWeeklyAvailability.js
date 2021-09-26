@@ -10,13 +10,14 @@ const StaffWeeklyAvailability = ({shifts}) => {
     const week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const { staffId } = useParams();
     const [showComplete, setShowComplete] = useState(false);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         if (shifts.length) getWeeklyAvailability();
     }, [shifts]);
 
     function getWeeklyAvailability() {
-        axios.get(`http://localhost:5000/staff/${staffId}/available`, { withCredentials: true })
+        axios.get(`${baseURL}/staff/${staffId}/available`, { withCredentials: true })
             .then(data => {
                 const weeklyAvailabilityQuery = data.data
                 if (weeklyAvailabilityQuery.length > 0) {
@@ -56,7 +57,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
     function putWeeklyAvailability(e) {
         e.preventDefault();
 
-        axios.put(`http://localhost:5000/staff/${staffId}/available`, {userWeeklyAvail}, {withCredentials: true})
+        axios.put(`${baseURL}/staff/${staffId}/available`, {userWeeklyAvail}, {withCredentials: true})
             .then(data => setShowComplete(true))
             .catch(e => console.log("Error - Couldn't get weekly schedule", e))
     }

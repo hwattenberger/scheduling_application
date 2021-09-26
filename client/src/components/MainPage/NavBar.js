@@ -10,10 +10,10 @@ import './Navbar.css';
 const NavBar = () => {
     const {loginUserInfo, dispatch} = useContext(LoginUserStateContext);
     const userDetails = loginUserInfo.userDetails;
-    // console.log("Nav user", userObject)
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     function logout() {
-        axios.get('http://localhost:5000/auth/logout', {withCredentials: true})
+        axios.get(`${baseURL}/auth/logout`, {withCredentials: true})
             .then(data =>  {
                 dispatch({type: 'LOGOUT'});
                 window.location.reload(true);
@@ -38,8 +38,6 @@ const NavBar = () => {
 
 
 const NavBarLinks = ({userDetails}) => {
-    // const userObject = useContext(myContext);
-    // console.log("Nav user", userObject)
 
     if(!userDetails) return null;
 

@@ -24,13 +24,14 @@ const StaffMember = () => {
     const { staffId } = useParams();
     const [shifts, setShifts] = useState([]);
     const [newPhoto, setNewPhoto] = useState("");
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         getUserInfoAndShifts();
     }, []);
 
     function getUserInfoAndShifts() {
-        axios.get(`http://localhost:5000/staff/${staffId}`, {withCredentials: true})
+        axios.get(`${baseURL}/staff/${staffId}`, {withCredentials: true})
             .then(data => { 
                 const tempUser = {
                     ...data.data,
@@ -46,7 +47,7 @@ const StaffMember = () => {
     }
 
     function getShifts(userRole) {
-        axios.get('http://localhost:5000/shiftTypes', {
+        axios.get(`${baseURL}/shiftTypes`, {
             withCredentials: true,
             params: {role: userRole._id}
         })
@@ -73,7 +74,7 @@ const StaffMember = () => {
             profilePhoto: user.profilePhoto
         }))
 
-        axios.put(`http://localhost:5000/staff/${staffId}/photo`, formData, {
+        axios.put(`${baseURL}/staff/${staffId}/photo`, formData, {
             withCredentials: true,
             headers: {
                 'Content-type': 'multipart/form-data'

@@ -12,13 +12,14 @@ const StaffRequestOff = () => {
     const { staffId } = useParams();
     const [timeoff, setTimeoff] = useState([]);
     const [date, setDate] = useState(new Date());
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         pullTimeoff();
     }, []);
 
     function pullTimeoff() {
-        axios.get(`http://localhost:5000/staff/${staffId}/timeoff`, {
+        axios.get(`${baseURL}/staff/${staffId}/timeoff`, {
             withCredentials: true
             })
             .then(data =>  {
@@ -28,7 +29,7 @@ const StaffRequestOff = () => {
     }
 
     function postTimeoff() {
-        axios.post(`http://localhost:5000/staff/${staffId}/timeoff`, {date: date}, { withCredentials: true })
+        axios.post(`${baseURL}/staff/${staffId}/timeoff`, {date: date}, { withCredentials: true })
             .then(data =>  {
                 setTimeoff([...timeoff, data.data])
             })
@@ -41,7 +42,7 @@ const StaffRequestOff = () => {
     }
 
     function onClickDeleteDayOff(dayOffId) {
-        axios.delete(`http://localhost:5000/timeOff/${dayOffId}`, {
+        axios.delete(`${baseURL}/timeOff/${dayOffId}`, {
             withCredentials: true
             })
             .then(data =>  {

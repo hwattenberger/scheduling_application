@@ -7,10 +7,11 @@ export const LoginUserStateContext = createContext();
 
 export const UserStateProvider = (props) => {
     const [loginUserInfo, dispatch] = useReducer(userReducer, initialState);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         dispatch({type: 'REQUEST_LOGIN'});
-        axios.get("http://localhost:5000/auth/getUser", {withCredentials: true}).then((res) => {
+        axios.get(`${baseURL}/auth/getUser`, {withCredentials: true}).then((res) => {
             if (res.data) {
                 dispatch({type: 'LOGIN_SUCCESS', payload: {
                     isAdmin: res.data.isAdmin,

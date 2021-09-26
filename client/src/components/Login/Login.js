@@ -11,6 +11,7 @@ const Login = (props) => {
     const [password, setPassword] = useState("");
     const {loginUserInfo, dispatch} = useContext(LoginUserStateContext);
     const {errorMessage} = loginUserInfo;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -22,7 +23,7 @@ const Login = (props) => {
 
     async function loginUser(loginPayload) {
         dispatch({type: 'REQUEST_LOGIN'});
-        return await axios.post('http://localhost:5000/auth/login', JSON.stringify(loginPayload),{
+        return await axios.post(`${baseURL}/auth/login`, JSON.stringify(loginPayload),{
             headers: {'Content-Type': 'application/json'}, withCredentials: true
         })
             .then(data => {
@@ -48,7 +49,7 @@ const Login = (props) => {
     }
 
     const googleLogin = () => {
-        window.open("http://localhost:5000/auth/google", "_self");
+        window.open(`${baseURL}/auth/google`, "_self");
     }
 
     return (

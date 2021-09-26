@@ -11,6 +11,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 const NeedsDayHeader = ({day, date, dayIx, daySchedule, shifts, setDaySchedule}) => {
     const [open, setOpen] = useState(false);
     const [dayShiftNumbers, setDayShiftNumbers] = useState([]);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         createDefaultNumbers();
@@ -18,7 +19,7 @@ const NeedsDayHeader = ({day, date, dayIx, daySchedule, shifts, setDaySchedule})
 
     function saveShifts() {
         dayShiftNumbers.forEach((scheduleShift) => {
-            axios.put(`http://localhost:5000/scheduleShift/${scheduleShift._id}`, scheduleShift, { withCredentials: true})
+            axios.put(`${baseURL}/scheduleShift/${scheduleShift._id}`, scheduleShift, { withCredentials: true})
         })
     }
   

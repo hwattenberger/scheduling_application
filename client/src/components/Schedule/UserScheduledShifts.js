@@ -6,13 +6,14 @@ import axios from "axios";
 const UserScheduledShifts = () => {
     const { staffId } = useParams();
     const [userSchedule, setUserSchedule] = useState([]);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         pullWeeklySchedule();
     }, []);
 
     function pullWeeklySchedule() {
-        axios.get(`http://localhost:5000/staff/${staffId}/upcomingShifts`, {
+        axios.get(`${baseURL}/staff/${staffId}/upcomingShifts`, {
             withCredentials: true
             })
             .then(data =>  {

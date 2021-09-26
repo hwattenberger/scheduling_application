@@ -10,6 +10,7 @@ const Register = (props) => {
     const [error, setError] = useState("");
     const [emailHelper, setEmailHelper] = useState("");
     const [passwordHelper, setPasswordHelper] = useState("");
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
@@ -29,7 +30,7 @@ const Register = (props) => {
     })
 
     async function registerUser(credentials) {
-        return await axios.post('http://localhost:5000/auth/register', credentials, {withCredentials: true})
+        return await axios.post(`${baseURL}/auth/register`, credentials, {withCredentials: true})
             .then(data => window.open("/", "_self"))
             .catch(e => {
                 if (e.response.data && e.response.data.message) setError(e.response.data.message)
@@ -77,7 +78,7 @@ const Register = (props) => {
     }
 
     const googleRegister = () => {
-        window.open("http://localhost:5000/auth/google", "_self");
+        window.open(`${baseURL}/auth/google`, "_self");
     }
 
     return (
@@ -107,5 +108,3 @@ const Register = (props) => {
 }
 
 export default Register;
-
-// Inspiration: https://dribbble.com/shots/15392711-Dashboard-Login-Sign-Up

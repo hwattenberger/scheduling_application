@@ -13,6 +13,7 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
     const [shifts, setShifts] = useState(null);
     const [availability, setWeeklyAvailability] = useState([]);
     const [gotInfo, setGotInfo] = useState(0);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         let isMounted = true;
@@ -24,7 +25,7 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
         };
 
         function pullShifts() {
-            axios.get('http://localhost:5000/shiftTypes', { withCredentials: true })
+            axios.get(`${baseURL}/shiftTypes`, { withCredentials: true })
                 .then(data =>  {
                     const tempShifts = data.data;
                     const tempShiftObj = {};
@@ -39,7 +40,7 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
         }
     
         function pullWeeklyAvailability() {
-            axios.get('http://localhost:5000/staffAvailabilityDate', {
+            axios.get(`${baseURL}/staffAvailabilityDate`, {
                 withCredentials: true,
                 params: {date: weeklySchedule.firstDayOfWeek}
                 })
