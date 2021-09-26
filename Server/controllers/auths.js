@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 
 module.exports.login = (req, res) => {
   try {
+    console.log("At login", req.user)
     const returnUser = req.user;
     returnUser.password = undefined;
     res.json(returnUser)
@@ -16,6 +17,7 @@ module.exports.login = (req, res) => {
 
 module.exports.authenticate = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
+    console.log("At authenticate 1")
     if (err) return next(err);
 
     if (info) return res.status(401).json({message: info.message});
@@ -27,6 +29,7 @@ module.exports.authenticate = (req, res, next) => {
     if(!user.isActive) {
       return res.status(401).json({ message: 'User is inactive'});
     }
+    console.log("At authenticate 2")
 
     req.logIn(user, function(err) {
       if (err) return next(err);
