@@ -31,9 +31,9 @@ function App() {
         <PrivateRoute path={`/staff/:staffId`}>
           <StaffMember />
         </PrivateRoute>
-        <AdminRoute path="/staff">
+        <Route path="/staff">
           <Staff />
-        </AdminRoute>
+        </Route>
         <AdminRoute path="/generalSetup">
           <GeneralSetup />
         </AdminRoute>

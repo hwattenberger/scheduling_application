@@ -41,7 +41,7 @@ const Register = (props) => {
     const validateEmailPassword = () => {
         let isError = false;
 
-        if(/[^@]/.test(email)) {
+        if(/^(?:(?!@).)*$/.test(email)) {
             setEmailHelper("Please enter a valid email address");
             isError = true;
         }

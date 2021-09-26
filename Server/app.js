@@ -87,11 +87,8 @@ app.use('/timeoff', timeoffRoutes);
 app.use('/scheduleShift', scheduleShiftRoutes);
 app.use('/staffAvailabilityDate', staffAvailabilityRoutes);
 
-app.get('/testing', (req, res) => {
-    res.send("Success");
-})
 app.get('/', (req, res) => {
-    console.log("Main page", req.session)
+    res.send("Main page");
 })
 
 app.listen(port, () => {
