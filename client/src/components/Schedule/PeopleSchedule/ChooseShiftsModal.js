@@ -149,7 +149,7 @@ const ChooseShiftsModal = ({currentStatus, personSched, setShift, shifts}) => {
                 open={showSnackbar}
                 onClose={handleSnackClose}
                 message="This is not a valid shift for this person"
-                key={'top' + 'center'} />
+                key={'topcenter'} />
       </div>
     );
   }

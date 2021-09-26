@@ -5,6 +5,7 @@ import DatePickerSchedule from "./DatePickerSchedule"
 import Schedule from "./PeopleSchedule/Schedule"
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
+import useUnsavedUpdatesWarning from "../../hooks/useUnsavedUpdatesWarning"
 
 import './Schedule.css';
 
@@ -15,6 +16,7 @@ const ScheduleIntro = () => {
     const [noSchedule, setNoSchedule] = useState(null);
     const [updatedScheduleShifts, setUpdatedScheduleShifts] = useState([]);
     const [snackBarMsg, setSnackBarMsg] = useState(null);
+    const [Prompt, setDirty, setClean] = useUnsavedUpdatesWarning();
 
     function formatDatetoJustDate() {
         const formattedDate = dayjs(date).format('YYYY-MM-DD');
@@ -110,6 +112,7 @@ const ScheduleIntro = () => {
 
         if (isFound) setUpdatedScheduleShifts([...newUpdatedScheduleShifts]);
         else setUpdatedScheduleShifts([...newUpdatedScheduleShifts, scheduleShift]);
+        setDirty();
     }
 
     function isInScheduledArray(peopleAssigned, personId) {
@@ -134,6 +137,7 @@ const ScheduleIntro = () => {
             .then(result => {
                 setSnackBarMsg("Saved");
                 setUpdatedScheduleShifts([]);
+                setClean();
             })
         })
     }
@@ -143,8 +147,10 @@ const ScheduleIntro = () => {
             <h1 className="scheduleH1">Schedule</h1>
             <div id="scheduleDatePicker">
                 <DatePickerSchedule date={formatDatetoJustDate()} setDate={setDate}/>
-                {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCopySchedule}>Copy Schedule From Last Week</Button>}
-                {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create New Schedule</Button>}
+                <div>
+                    {noSchedule === true && <Button variant="outlined" color="primary" className="schedulebtn" onClick={onClickCopySchedule}>Copy Schedule From Last Week</Button>}
+                    {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create New Blank Schedule</Button>}
+                </div>
             </div>
             {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift} setWeeklySchedule={setWeeklySchedule}/>}
             {updatedScheduleShifts.length > 0 && <Button id="saveChgBtn" variant="outlined" onClick={saveSchedule}>Save Changes</Button>}
@@ -154,6 +160,7 @@ const ScheduleIntro = () => {
                 onClose={handleSnackClose}
                 message={snackBarMsg}
                 key={'top' + 'center'} />
+            {Prompt}
         </div>
     )
 }

@@ -41,22 +41,14 @@ const ColumnContentNeeds = ({columnIx, weeklySchedule, shifts}) => {
         }, [shifts]);
     
     if(!shifts || !weeklySchedule) return null;
-    if (columnIx === 0) return (<NeedsHeader weeklySchedule={weeklySchedule} shifts={shifts}/>)
+    if (columnIx === 0) return (<NeedsHeader />)
     return (<DailyNeeds dayIx={columnIx-1} weeklySchedule={weeklySchedule} shifts={shifts}/>)
-    return null;
 }
 
 
-const NeedsHeader = ({weeklySchedule, shifts}) => {
-    // console.log("Needs Header", shifts)
-    // console.log("Header schedule", weeklySchedule.days[0].scheduleShifts)
+const NeedsHeader = () => {
     return (
         <div className="dailyNeedsContainer">
-            {/* {weeklySchedule.days[0].scheduleShifts.map((scheduleShift) => (
-                <div key={shifts[scheduleShift.shift]._id} className="shiftsDayBlock">
-                    {shifts[scheduleShift.shift].name}
-                </div>
-            ))} */}
         </div>
     )
 }

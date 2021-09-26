@@ -22,7 +22,7 @@ const Register = (props) => {
         
         if (error) return;
 
-        const registerPerson = await registerUser({
+        await registerUser({
             email,
             password
         })
@@ -86,7 +86,7 @@ const Register = (props) => {
                 <div id="registerDiv-Header">
                     <h2>Register</h2>
                     <div>
-                        <Button variant="outlined" onClick={googleRegister}><img className="googleImg" src={googleImg} />Register with Google</Button>
+                        <Button variant="outlined" onClick={googleRegister}><img className="googleImg" alt="Google Login" src={googleImg} />Register with Google</Button>
                     </div>
                     -or- Register with Email
                 </div>

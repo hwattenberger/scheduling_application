@@ -88,7 +88,6 @@ const StaffMember = () => {
                 }
                 setUser(tempUser);
                 setNewPhoto("");
-                console.log("Success!", data.data)
             })
             .catch(e => console.log("Error Staff", e))
     }

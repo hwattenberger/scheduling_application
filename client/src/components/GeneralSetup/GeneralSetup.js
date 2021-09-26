@@ -88,7 +88,7 @@ const GeneralSetup = () => {
                 open={showSnackbar}
                 onClose={handleSnackClose}
                 message="Saved Updates"
-                key={'top' + 'center'} />
+                key={'topcenter'} />
         </div>
     );
 }

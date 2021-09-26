@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Button, TextField } from '@material-ui/core'
 import { LoginUserStateContext } from '../../Context/userAuth/Context'
 import googleImg from '../../images/google-logo.png'
@@ -14,7 +14,7 @@ const Login = (props) => {
 
     const handleSubmit = (async (event) => {
         event.preventDefault();
-        const loginPerson = await loginUser({
+        await loginUser({
             email,
             password
         })
@@ -57,7 +57,7 @@ const Login = (props) => {
                 <div id="loginDiv-Header">
                     <h2>Login</h2>
                     <div>
-                        <Button variant="outlined" onClick={googleLogin}><img className="googleImg" src={googleImg} />Sign in with Google</Button>
+                        <Button variant="outlined" onClick={googleLogin}><img className="googleImg" alt="Google Login" src={googleImg} />Sign in with Google</Button>
                     </div>
                     -or- Sign in with Email
                 </div>

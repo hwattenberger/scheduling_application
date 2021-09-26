@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react"
 import {useParams} from "react-router-dom";
-import dayjs from 'dayjs';
 import axios from "axios";
 
 
@@ -17,7 +16,6 @@ const UserScheduledShifts = () => {
             withCredentials: true
             })
             .then(data =>  {
-                console.log("My Schedule", data.data);
                 setUserSchedule(data.data);
             })
             .catch(e => console.log("Error Pulling Weekly Schedule", e))

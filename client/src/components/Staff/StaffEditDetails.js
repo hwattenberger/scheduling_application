@@ -18,7 +18,7 @@ const StaffEditDetails = ({person, roles, editStaff}) => {
         lastName: person.lastName || "",
         email: person.email || "",
         isAdmin: person.isAdmin || false,
-        userRole: person.userRole && person.userRole._id || "",
+        userRole: (person.userRole && person.userRole._id) || "",
         isActive: ( person.isActive == null ? true : person.isActive),
         hourlyPay: person.hourlyPay || ""
     };
@@ -34,7 +34,7 @@ const StaffEditDetails = ({person, roles, editStaff}) => {
     }
 
     const handleInputChangeRole = (e) => {
-        setStaffInfo({...staffInfo,["userRole"]:e.target.value});
+        setStaffInfo({...staffInfo,"userRole":e.target.value});
     }
 
     const onSave = (e) => {

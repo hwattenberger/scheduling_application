@@ -12,7 +12,7 @@ const Landing = () => {
                 <a href="/register"><Button variant="outlined" color="primary">Get Started</Button></a>
             </div>
             <div id="rightdiv">
-                <img src={mainImage}></img>
+                <img src={mainImage} alt=""></img>
             </div>
             <div id="bottomdiv">
                 <a href="http://www.freepik.com">Vector image designed by pikisuperstar / Freepik</a>

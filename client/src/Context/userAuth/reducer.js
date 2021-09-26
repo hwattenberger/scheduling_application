@@ -1,5 +1,3 @@
-import React, {useReducer} from "react";
-
 export const initialState = {
     userDetails: null,
     loading: false,

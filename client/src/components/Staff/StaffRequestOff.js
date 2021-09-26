@@ -22,7 +22,6 @@ const StaffRequestOff = () => {
             withCredentials: true
             })
             .then(data =>  {
-                console.log("Time off requested", data.data)
                 setTimeoff(data.data);
             })
             .catch(e => console.log("Error pulling time off request", e))
@@ -31,7 +30,6 @@ const StaffRequestOff = () => {
     function postTimeoff() {
         axios.post(`http://localhost:5000/staff/${staffId}/timeoff`, {date: date}, { withCredentials: true })
             .then(data =>  {
-                // console.log("Data", data)
                 setTimeoff([...timeoff, data.data])
             })
             .catch(e => console.log("Error pulling time off request", e))
@@ -47,7 +45,6 @@ const StaffRequestOff = () => {
             withCredentials: true
             })
             .then(data =>  {
-                console.log("Deleted", data)
                 const newTimeOffs = timeoff.filter((timeoffReq) => timeoffReq._id !== dayOffId);
                 setTimeoff(newTimeOffs)
             })

@@ -29,7 +29,6 @@ const Staff = () => {
     function editStaff(id, ix, updatedStaff) {
         axios.put(`http://localhost:5000/staff/${id}`, { updatedStaff: updatedStaff }, {withCredentials: true})
             .then(result => {
-                console.log("WoW", result, ix)
                 const newStaff = [...staff];
                 newStaff[ix] = result.data;
                 setStaff(newStaff);
@@ -75,7 +74,7 @@ const Staff = () => {
                 open={showSnackbar}
                 onClose={handleSnackClose}
                 message="Saved User Update"
-                key={'top' + 'center'} />
+                key={'topcenter'} />
         </div>
     );
 }

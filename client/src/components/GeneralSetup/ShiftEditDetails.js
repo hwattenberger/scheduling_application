@@ -1,13 +1,6 @@
 import React, { useState } from "react";
-import { Edit } from '@material-ui/icons';
-
-import NumericInput from 'react-numeric-input';
 
 import { TextField, FormControl, Select, InputLabel, MenuItem, Button } from '@material-ui/core'
-// import FormControl from '@material-ui/core/FormControl';
-// import Select from '@material-ui/core/Select';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({

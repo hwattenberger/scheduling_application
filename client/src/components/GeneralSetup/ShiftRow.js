@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import UserAvatar from '../General/UserAvatar'
 import ShiftEditDetails from './ShiftEditDetails'
 
 import {KeyboardArrowDown, KeyboardArrowUp} from '@material-ui/icons';

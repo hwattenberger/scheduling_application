@@ -20,7 +20,6 @@ const StaffWeeklyAvailability = ({shifts}) => {
             .then(data => {
                 const weeklyAvailabilityQuery = data.data
                 if (weeklyAvailabilityQuery.length > 0) {
-                    console.log("Data data", weeklyAvailabilityQuery)
                     
                     const savedShifts = weeklyAvailabilityQuery[0].shiftAvailability.map((shift) => shift.shiftType._id);
                     const shiftsIds = shifts.map((shift) => shift._id);
@@ -63,8 +62,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
     }
 
     function setupNewWeeklyShifts() {
-        console.log("New User Creating Shifts")
-        const weeklyShifts = new Array();
+        const weeklyShifts = [];
         week.forEach((day, dayIx) => {
             weeklyShifts[dayIx] = {
                 shiftAvailability: shifts.map((shift) => {
@@ -76,7 +74,6 @@ const StaffWeeklyAvailability = ({shifts}) => {
                 })
             }
         })
-        // console.log(weeklyShifts)
         setUserWeeklyAvail(weeklyShifts);
     }
 
@@ -121,7 +118,7 @@ const StaffWeeklyAvailability = ({shifts}) => {
                 open={showComplete}
                 onClose={handleSnackClose}
                 message="Weekly Availability Saved"
-                key={'top' + 'center'} />
+                key={'topcenter'} />
         </div>
     )
 }
