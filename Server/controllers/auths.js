@@ -49,7 +49,7 @@ module.exports.getUser = (req, res) => {
 }
 
 module.exports.googleCallback = (req, res) => {
-    res.redirect('http://localhost:3000');
+    res.redirect(process.env.GOOGLE_CALLBACK);
 }
 
 module.exports.localSignup = async (req, res) => {

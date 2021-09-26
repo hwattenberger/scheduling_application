@@ -7,8 +7,7 @@ const cloudinary = require('../addons/cloudinary')
 
 module.exports.getAllStaff = async (req, res) => {
     const staff = await User.find({}, {password: 0}).sort({firstName: 1}).populate({path:'userRole'});
-    // delete staff.password;
-    // console.log("Staff", staff);
+
     res.json(staff);
 }
 
@@ -17,8 +16,6 @@ module.exports.getStaffMember = async (req, res) => {
     const staffMember = await User.findById(staffId).populate({path:'userRole'});
 
     staffMember.password = undefined;
-
-    console.log("Staff Query", staffMember);
 
     res.json(staffMember)
 }
@@ -63,8 +60,6 @@ module.exports.getUpcomingShifts = async (req, res) => {
     const todayDate = new Date();
     const userShifts = await ScheduleShift.find({peopleAssigned: staffId, date: {$gte: todayDate}})
       .populate({path: 'shift'});
-    
-    console.log("User Shifts: ", userShifts, staffId);
 
     res.json(userShifts);
 }
@@ -74,8 +69,6 @@ module.exports.getUserAvailability = async (req, res) => {
     const userAvailable = await Availability.find({person: staffId})
         .sort({dayOfWeek: 1})
         .populate('shiftAvailability.shiftType');
-    
-    console.log("User Availability: ", userAvailable);
 
     res.json(userAvailable)
 }
@@ -105,8 +98,6 @@ module.exports.putUserAvailability = async (req, res) => {
 module.exports.getUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const staffRequestsOff = await TimeoffRequest.find({person: staffId}).sort({day: 1});
-    
-    // console.log("Requests Off: ", staffRequestsOff);
 
     res.json(staffRequestsOff)
 }
@@ -114,7 +105,6 @@ module.exports.getUserTimeoff = async (req, res) => {
 module.exports.postUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const {date} = req.body;
-    console.log("Time Off Body", date);
 
     if(!date) res.status(405).json("No date specified");
 
