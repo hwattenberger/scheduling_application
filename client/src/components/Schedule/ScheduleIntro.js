@@ -66,6 +66,7 @@ const ScheduleIntro = () => {
             .catch(e => {
                 if (e.response.data && e.response.data.error) setSnackBarMsg(e.response.data.error)
                 else setSnackBarMsg("Error creating schedule for this week")
+                setNoSchedule(true);
             })
     }
 

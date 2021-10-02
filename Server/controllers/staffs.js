@@ -3,7 +3,7 @@ const Availability = require('../models/availability');
 const TimeoffRequest = require('../models/timeoffRequest');
 const ScheduleShift = require('../models/scheduleShift');
 const cloudinary = require('../addons/cloudinary')
-
+const dayjs = require('dayjs');
 
 module.exports.getAllStaff = async (req, res) => {
     const staff = await User.find({}, {password: 0}).sort({firstName: 1}).populate({path:'userRole'});
@@ -106,9 +106,12 @@ module.exports.postUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const {date} = req.body;
 
-    if(!date) res.status(405).json("No date specified");
+    console.log("Time off request", date)
 
-    const newTimeOff = new TimeoffRequest({ person: staffId, day: date})
+    if(!date) res.status(405).json("No date specified");
+    const formattedDate = dayjs(date).format('YYYY-MM-DD')
+
+    const newTimeOff = new TimeoffRequest({ person: staffId, day: formattedDate})
     await newTimeOff.save();
 
     res.json(newTimeOff);

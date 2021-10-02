@@ -15,7 +15,8 @@ const Landing = () => {
                 <img src={mainImage} alt=""></img>
             </div>
             <div id="bottomdiv">
-                <a href="http://www.freepik.com">Vector image designed by pikisuperstar / Freepik</a>
+                <a href="http://www.freepik.com">Vector image designed by pikisuperstar / Freepik</a> & 
+                schedule icon made by <a href="https://www.flaticon.com/authors/becris" title="Becris">Becris</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
             </div>
         </div>
     )

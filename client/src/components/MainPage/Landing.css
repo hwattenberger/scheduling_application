@@ -35,12 +35,12 @@
 }
 
 #mainpage #bottomdiv {
-    position:absolute;
-    bottom:0;
+    position: absolute;
+    bottom: 0;
+    font-size: 12px;
 }
 
 #mainpage #bottomdiv a {
     text-align: center;
     color: inherit;
-    font-size: 12px;
 }
