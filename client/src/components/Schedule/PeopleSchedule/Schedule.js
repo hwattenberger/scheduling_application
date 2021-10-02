@@ -77,12 +77,9 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
     }
 
     function getDate(columnIx) {
-        let utc = require('dayjs/plugin/utc')
-        dayjs.extend(utc)
-        // console.log(weeklySchedule.firstDayOfWeek)
-        const test="2021-08-08T00:00:00.000+00:00"
-        console.log("HI", dayjs(test).utc(true).add(columnIx-1,'day').format("MM/DD"))
-        return dayjs(weeklySchedule.firstDayOfWeek).utc(true).add(columnIx-1,'day').format("MM/DD")
+        let utc = require('dayjs/plugin/utc');
+        dayjs.extend(utc);
+        return dayjs(weeklySchedule.firstDayOfWeek).utc(true).add(columnIx-1,'day').format("MM/DD");
     }
 
     if( gotInfo < 2 ) return <CircularProgress />;
