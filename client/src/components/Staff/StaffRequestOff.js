@@ -52,6 +52,12 @@ const StaffRequestOff = () => {
             .catch(e => console.log("Error pulling time off request", e))
     }
 
+    function dateDisplay(date) {
+        let utc = require('dayjs/plugin/utc')
+        dayjs.extend(utc)
+        return dayjs(date).utc().format('MM/DD/YYYY')
+    }
+
     function onClickTimeoff(e) {
         e.preventDefault();
         postTimeoff();
@@ -64,7 +70,7 @@ const StaffRequestOff = () => {
             <h3>Upcoming Time Off</h3>
             <div id="upcomingTimeOffDiv">
                 {timeoff.map((dayOff) => (
-                    <div key={dayOff._id}>{dayOff.day}{dayjs(dayOff.day).format('MM/DD/YYYY')}<span onClick={() => {onClickDeleteDayOff(dayOff._id)}}><DeleteIcon/></span></div>
+                    <div key={dayOff._id}>{dayOff.day}{dateDisplay(dayOff.day)}<span onClick={() => {onClickDeleteDayOff(dayOff._id)}}><DeleteIcon/></span></div>
                 ))}
             </div>
         </div>

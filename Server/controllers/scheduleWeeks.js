@@ -15,7 +15,7 @@ module.exports.getScheduleWeek = async (req, res) => {
         .populate("days.scheduleShifts.shift.name")
         
 
-    console.log("scheduleWeek", date, sundayOfWeek);
+    console.log("scheduleWeek", date, formattedDate, sundayOfWeek);
     
     res.json(scheduleWeek);
 }
