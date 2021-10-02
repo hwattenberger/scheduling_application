@@ -53,9 +53,10 @@ const StaffRequestOff = () => {
     }
 
     function dateDisplay(date) {
-        let utc = require('dayjs/plugin/utc')
-        dayjs.extend(utc)
-        return dayjs(date).utc().format('MM/DD/YYYY')
+        // let utc = require('dayjs/plugin/utc');
+        // dayjs.extend(utc);
+        console.log(dayjs(date))
+        return dayjs(date).format('MM/DD/YYYY');
     }
 
     function onClickTimeoff(e) {
@@ -70,7 +71,7 @@ const StaffRequestOff = () => {
             <h3>Upcoming Time Off</h3>
             <div id="upcomingTimeOffDiv">
                 {timeoff.map((dayOff) => (
-                    <div key={dayOff._id}>{dayOff.day}{dateDisplay(dayOff.day)}<span onClick={() => {onClickDeleteDayOff(dayOff._id)}}><DeleteIcon/></span></div>
+                    <div key={dayOff._id}>{}{dateDisplay(dayOff.day)}<span onClick={() => {onClickDeleteDayOff(dayOff._id)}}><DeleteIcon/></span></div>
                 ))}
             </div>
         </div>
