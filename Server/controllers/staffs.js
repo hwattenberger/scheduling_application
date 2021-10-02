@@ -106,7 +106,7 @@ module.exports.postUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const {date} = req.body;
 
-    console.log("Time off request", date)
+    console.log("Time off request", date, dayjs(date).format('YYYY-MM-DD'))
 
     if(!date) res.status(405).json("No date specified");
     const formattedDate = dayjs(date).format('YYYY-MM-DD')

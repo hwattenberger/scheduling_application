@@ -4,6 +4,8 @@ module.exports.getStaffAvailabilityForWeek = async (req, res) => {
     const {date} = req.query;
     const newDate = new Date(date);
 
+    console.log("DATE - getStaffAvailabilityForWeek", newDate, date)
+
     const getWeekAvailability = await Availability.aggregate([{
         $lookup: {
             from: 'timeoffrequests',
@@ -79,7 +81,7 @@ module.exports.getStaffAvailabilityForWeek = async (req, res) => {
         $sort : {"_id": 1}
     }])
 
-    console.log("getWeekAvailability", getWeekAvailability)
+    // console.log("getWeekAvailability", getWeekAvailability)
 
     res.json(getWeekAvailability);
 }
