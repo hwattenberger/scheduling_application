@@ -43,17 +43,17 @@ It is hard to schedule lots of part time staff.  While their availability may be
 
 ## 🧐 Features <a name = "about"></a>
 For Managers (Only available for users who are marked as admins):
-- Create staff roles (sever, manager, host, etc.) and shift types (AM server shift, PM host shift)
-- Manage staff (activate & deactivate/turn into admin/manage staff information including staff role, image)
-- Create weekly schedules to publish to your staff.  More details on scheduling below.
+- Create staff roles (sever, manager, host, etc.) and [shift types](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Create%20and%20update%20shifts.png) (AM server shift, PM host shift)
+- [Manage staff](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Update%20Staff%20Information.png) (activate & deactivate/turn into admin/manage staff information including staff role, image)
+- Create [weekly schedules](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Schedule.png) to publish to your staff.  More details on scheduling below.
 
 For Staff:
-- Update weekly availability and user information
-- Create time off requests
-- See upcoming shifts
+- [Update weekly availability](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Specify%20Your%20Schedule.png) and user information
+- [Create time off requests](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Request%20Time%20Off.png)
+- [See upcoming shifts](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20View%20Upcoming%20Shifts.png)
 
 General Features:
-- Authentication either natively with a username and password OR through Google
+- [Authentication](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Register.png) either natively with a username and password OR through Google
 
 Scheduling information:
 - Schedules are created from a combination of each user's specified weekly availability and their time off requests.
@@ -61,7 +61,7 @@ Scheduling information:
 - Users are scheduled for a specific shift on a specific date.  You can schedule them in the scheduling activity either by selecting a shift for that user or dragging an open shift to their user.
 - You can schedule a user for multiple shifts in a day.
 - Filter to only show shifts for a specific user role (for example servers).
-- Modify specific days to require less or more for a specific shift.  For example on a holiday you may want to close or expect 3 instead of 5 servers for the evening shift.
+- [Modify specific days](https://hilary-wattenberger.netlify.app/images/Scheduling%20App%20-%20Change%20People%20Needed.png) to require less or more for a specific shift.  For example on a holiday you may want to close or expect 3 instead of 5 servers for the evening shift.
 
 ## Data Model <a name = "datamodel"></a>
 Here is the data model for this project:
