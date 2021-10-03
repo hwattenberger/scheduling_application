@@ -59,7 +59,7 @@ module.exports.getUpcomingShifts = async (req, res) => {
     const {staffId} = req.params;
     const todayDate = dayjs().format('YYYY-MM-DD')
     const userShifts = await ScheduleShift.find({peopleAssigned: staffId, date: {$gte: todayDate}})
-      .populate({path: 'shift'});
+      .populate({path: 'shift'}).sort({date: 1});
 
     res.json(userShifts);
 }
@@ -77,8 +77,6 @@ module.exports.putUserAvailability = async (req, res) => {
     const {staffId} = req.params;
     const updatedAvailability = req.body.userWeeklyAvail;
 
-    console.log("Updated", updatedAvailability)
-
     for(let i=0; i<7; i++) {
         let oneDayAvailability = await Availability.findOneAndUpdate({person: staffId, dayOfWeek: i}, updatedAvailability[i], {omitUndefined:true})
         if (!oneDayAvailability) {
@@ -87,7 +85,6 @@ module.exports.putUserAvailability = async (req, res) => {
                 dayOfWeek: i,
                 shiftAvailability: [...updatedAvailability[i].shiftAvailability]
             })
-            console.log("New Availability", newAvailability)
             newAvailability.save();
         }
     }
@@ -108,12 +105,8 @@ module.exports.postUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const {date} = req.body;
 
-    // console.log("Time off request", date, dayjs(date).format('YYYY-MM-DD'), Date())
-
     if(!date) res.status(405).json("No date specified");
     const formattedDate = dayjs(date).format('YYYY-MM-DD')
-
-    // console.log("formatted date", formattedDate)
 
     const newTimeOff = new TimeoffRequest({ person: staffId, day: formattedDate})
     await newTimeOff.save();

@@ -6,8 +6,5 @@ module.exports.updateShift = async (req, res) => {
 
     const scheduledShift = await ScheduleShift.findByIdAndUpdate(schedShiftId, updScheduleShift, {omitUndefined:true});
 
-    console.log("Staff", req.params);
-    console.log("Staff Query", updScheduleShift);
-
     res.json("Success");
 }

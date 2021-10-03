@@ -62,11 +62,6 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule, filterRo
         setWeeklySchedule(newWeeklySchedule);
     }
 
-    // useEffect(() => {
-    //     console.log("Reloading")
-    // }, [weeklySchedule]);
-
-
     function dayName(columnIx) {
         if (columnIx===0) return <div className="dateSection"></div>;
         return (

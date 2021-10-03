@@ -42,7 +42,6 @@ const ScheduleIntro = () => {
 
 
     function pullWeeklySchedule() {
-        console.log("Pull schedule", date);
         axios.get(`${baseURL}/scheduleWeek`, {
             withCredentials: true,
             params: {date: date}
