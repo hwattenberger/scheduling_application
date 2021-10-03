@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://spotify-api-create-playlist.netlify.app/spotify-icon.png" alt="Project logo"></a>
+ <img width=200px height=200px src="https://hilary-wattenberger.netlify.app/images/date.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">MySchedule - Shift scheduling application</h3>
@@ -65,14 +65,15 @@ Scheduling information:
 
 ## Data Model <a name = "datamodel"></a>
 Here is the data model for this project:
-<img width=800px src="https://hilary-wattenberger.netlify.app/images/SpotifyProject2.gif" alt="Sample workflow">
+<img width=800px src="https://hilary-wattenberger.netlify.app/DatabaseDiagramSchedulingApp.png" alt="Sample workflow">
 
 ## 🏁 See Demo and/or Live Example <a name = "example"></a>
-See this image for workflow:
-<img width=800px src="https://hilary-wattenberger.netlify.app/images/SpotifyProject2.gif" alt="Sample workflow">
-You can access the live application here: https://hwattenberger-schedulingapp.netlify.app/schedule
-If you don't want to create your own user, you can use:
-Admin User: willy@willy.com Password: willy
+See this image for workflow (coming soon!):
+<!-- <img width=800px src="https://hilary-wattenberger.netlify.app/images/SpotifyProject2.gif" alt="Sample workflow"> -->
+<br>
+You can access the live application here: https://hwattenberger-schedulingapp.netlify.app/schedule <br><br>
+If you don't want to create your own user, you can use: <br>
+Admin User: willy@willy.com Password: willy <br>
 Non-Admin User: jill@jill.com Password: jill
 
 ## 🎈 What did I learn? <a name="learnings"></a>
@@ -95,7 +96,7 @@ I have a long list of things I'd work on if I had more time.  Here are some of t
 - Responsiveness.  Most of the pages are reasonably responsive but there's certainly more work to be done.
 - More validation on forms.  I did this for the registration form to show that I could make it work but could do it on all forms
 - Way too much prop drilling on the scheduling page.  I'd move to useContext (if not something like Redux)
-- I'd move the API calls outside of components into its own hook
+- I'd move the API calls outside of components into their own hook
 
 ## ✍️ Author <a name = "authors"></a>
 - [@hwattenberger](https://github.com/hwattenberger)
