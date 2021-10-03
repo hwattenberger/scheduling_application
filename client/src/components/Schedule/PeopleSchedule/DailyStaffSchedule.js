@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DailySchedulePerson from "./DailySchedulePerson";
 import {getPersonDayStatus} from "../../../helpfulFunctions/index"
 
-const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
+const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts, filterRole}) => {
     const [daySchedule, setDaySchedule] = useState([]);
 
     useEffect(() => {
@@ -37,14 +37,19 @@ const DailyStaffSchedule = ({dayIx, availability, staffShift, shifts}) => {
         return returnClass;
     }
 
+    function showPersonAvailabilityBox(personSched, personIx) {
+        if (filterRole && personSched.person.userRole._id !== filterRole) return null;
+
+        return (
+            <div key={personSched.person._id} className={getPersonDayClassName(personSched)}>
+                <DailySchedulePerson personSched={personSched} shifts={shifts} setShift={(availShiftIx) => setShift(availShiftIx,personIx)} />
+            </div>
+        )
+    }
 
     return (
         <div className="dailyScheduleContainer">
-            {daySchedule.map((personSched, personIx) => (
-                <div key={personSched.person._id} className={getPersonDayClassName(personSched)}>
-                    <DailySchedulePerson personSched={personSched} shifts={shifts} setShift={(availShiftIx) => setShift(availShiftIx,personIx)} />
-                </div>
-            ))}
+            {daySchedule.map((personSched, personIx) => showPersonAvailabilityBox(personSched, personIx))}
         </div>
     )
 

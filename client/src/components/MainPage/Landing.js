@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button'
 import './Landing.css';
 import mainImage from './../../images/mainpageImage.jpg'
+import {Link} from 'react-router-dom'
 
 const Landing = () => {
 
@@ -9,7 +10,7 @@ const Landing = () => {
             <div id="leftdiv">
                 <h1>Easy shift scheduling for your part-time workforce</h1>
                 <p>Restaurant scheduling made easy.  Create schedules with a click.  Empower employees to request time off & view their schedules.  Analytics at your fingertips.</p>
-                <a href="/register"><Button variant="outlined" color="primary">Get Started</Button></a>
+                <Link to="/register"><Button variant="outlined" color="primary">Get Started</Button></Link>
             </div>
             <div id="rightdiv">
                 <img src={mainImage} alt=""></img>

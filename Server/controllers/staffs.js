@@ -57,7 +57,7 @@ module.exports.putStaffMemberWImage = async (req, res) => {
 
 module.exports.getUpcomingShifts = async (req, res) => {
     const {staffId} = req.params;
-    const todayDate = new Date();
+    const todayDate = dayjs().format('YYYY-MM-DD')
     const userShifts = await ScheduleShift.find({peopleAssigned: staffId, date: {$gte: todayDate}})
       .populate({path: 'shift'});
 
@@ -97,7 +97,9 @@ module.exports.putUserAvailability = async (req, res) => {
 
 module.exports.getUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
-    const staffRequestsOff = await TimeoffRequest.find({person: staffId}).sort({day: 1});
+    const todayDate = dayjs().format('YYYY-MM-DD')
+
+    const staffRequestsOff = await TimeoffRequest.find({person: staffId, day: {$gte: todayDate}}).sort({day: 1});
 
     res.json(staffRequestsOff)
 }
@@ -106,12 +108,12 @@ module.exports.postUserTimeoff = async (req, res) => {
     const {staffId} = req.params;
     const {date} = req.body;
 
-    console.log("Time off request", date, dayjs(date).format('YYYY-MM-DD'), Date())
+    // console.log("Time off request", date, dayjs(date).format('YYYY-MM-DD'), Date())
 
     if(!date) res.status(405).json("No date specified");
     const formattedDate = dayjs(date).format('YYYY-MM-DD')
 
-    console.log("formatted date", formattedDate)
+    // console.log("formatted date", formattedDate)
 
     const newTimeOff = new TimeoffRequest({ person: staffId, day: formattedDate})
     await newTimeOff.save();

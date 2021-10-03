@@ -8,7 +8,7 @@ import ColumnContentSchedule from "./ColumnContentSchedule"
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
+const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule, filterRole}) => {
     const week = [".", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const [shifts, setShifts] = useState(null);
     const [availability, setWeeklyAvailability] = useState([]);
@@ -92,7 +92,7 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
                 {week.map((day, columnIx) => (
                     <div key={columnIx} className="weekday-div">
                         <NeedsHeader day={day} date={getDate(columnIx)} columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts} setDaySchedule={setDaySchedule} />
-                        <ColumnContentNeeds columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts}/>
+                        <ColumnContentNeeds columnIx={columnIx} weeklySchedule={weeklySchedule} shifts={shifts} filterRole={filterRole}/>
                     </div>
                 ))}
             </div>
@@ -103,7 +103,7 @@ const Schedule = ({weeklySchedule, date, staffShift, setWeeklySchedule}) => {
                 {week.map((day, columnIx) => (
                     <div key={columnIx} className="weekday-div">
                         {dayName(columnIx)}
-                        <ColumnContentSchedule columnIx={columnIx} availability={availability} staffShift={staffShift} shifts={shifts}/>
+                        <ColumnContentSchedule columnIx={columnIx} availability={availability} staffShift={staffShift} shifts={shifts} filterRole={filterRole}/>
                     </div>
                 ))}
             </div>

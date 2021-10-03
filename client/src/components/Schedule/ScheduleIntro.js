@@ -3,19 +3,25 @@ import dayjs from 'dayjs';
 import axios from "axios";
 import DatePickerSchedule from "./DatePickerSchedule"
 import Schedule from "./PeopleSchedule/Schedule"
+import UserRoleFilter from '../Staff/UserRoleFilter'
+
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import useUnsavedUpdatesWarning from "../../hooks/useUnsavedUpdatesWarning"
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 import './Schedule.css';
 
 
 const ScheduleIntro = () => {
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [weeklySchedule, setWeeklySchedule] = useState({});
     const [noSchedule, setNoSchedule] = useState(null);
     const [updatedScheduleShifts, setUpdatedScheduleShifts] = useState([]);
     const [snackBarMsg, setSnackBarMsg] = useState(null);
+    const [filterRole, setFilterRole] = useState("");
+    const [roles, setRoles] = useState([]);
+
     const [Prompt, setDirty, setClean] = useUnsavedUpdatesWarning();
     const baseURL = process.env.REACT_APP_API_BASE_URL;
 
@@ -25,6 +31,10 @@ const ScheduleIntro = () => {
     }
 
     useEffect(() => {
+        getRoles();
+    }, [])
+
+    useEffect(() => {
         setNoSchedule(null);
         setUpdatedScheduleShifts([]);
         pullWeeklySchedule();
@@ -32,6 +42,7 @@ const ScheduleIntro = () => {
 
 
     function pullWeeklySchedule() {
+        console.log("Pull schedule", date);
         axios.get(`${baseURL}/scheduleWeek`, {
             withCredentials: true,
             params: {date: date}
@@ -42,6 +53,11 @@ const ScheduleIntro = () => {
                 else setNoSchedule(false);
             })
             .catch(e => console.log("Error Pulling Weekly Schedule", e))
+    }
+
+    function getRoles() {
+        axios.get(`${baseURL}/userRole`, {withCredentials: true})
+            .then(data => setRoles(data.data))
     }
 
     function onClickCreateSchedule() {
@@ -129,6 +145,17 @@ const ScheduleIntro = () => {
         return isInArray;
     }
 
+    function showFilter() {
+        if (noSchedule === false) {
+            return (
+                <div id="filterStaffDiv">
+                    <FilterListIcon /><UserRoleFilter filterRole={filterRole} setFilterRole={setFilterRole} roles={roles} />
+                </div>
+            )
+        }
+        else return null;
+    }
+
     function handleSnackClose() {
         setSnackBarMsg(null);
     }
@@ -153,8 +180,9 @@ const ScheduleIntro = () => {
                     {noSchedule === true && <Button variant="outlined" color="primary" className="schedulebtn" onClick={onClickCopySchedule}>Copy Schedule From Last Week</Button>}
                     {noSchedule === true && <Button variant="outlined" className="schedulebtn" onClick={onClickCreateSchedule}>Create New Blank Schedule</Button>}
                 </div>
+                {showFilter()}
             </div>
-            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift} setWeeklySchedule={setWeeklySchedule}/>}
+            {noSchedule === false && <Schedule weeklySchedule={weeklySchedule} date={date} staffShift={staffShift} setWeeklySchedule={setWeeklySchedule} filterRole={filterRole}/>}
             {updatedScheduleShifts.length > 0 && <Button id="saveChgBtn" variant="outlined" onClick={saveSchedule}>Save Changes</Button>}
             <Snackbar
                 anchorOrigin={{vertical: 'top', horizontal: 'center'}}

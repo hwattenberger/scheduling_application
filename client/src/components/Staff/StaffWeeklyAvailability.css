@@ -1,11 +1,11 @@
 #weekDiv {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 #weekDiv .weekday-div {
     background-color: var(--main-divs-color);
-    width: 100%;
+    min-width: 150px;
     margin: 2px;
     padding: 2px;
     display: flex;
@@ -58,4 +58,11 @@
     transform: translateY(-2px);
     color: rgb(0, 0, 0, .75);
     cursor: pointer;
+}
+
+@media (max-width: 400px) {
+    #weekDiv .weekday-div {
+        width: 100%;
+    }
+
 }

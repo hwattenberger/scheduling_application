@@ -24,8 +24,6 @@
     flex-flow: row nowrap;
     flex-direction: column;
     justify-content: center;
-    /* align-items: center; */
-    /* flex-shrink: 2; */
 }
 
 #mainpage #rightdiv img {
@@ -43,4 +41,18 @@
 #mainpage #bottomdiv a {
     text-align: center;
     color: inherit;
+}
+
+@media (max-width: 550px) {
+    #mainpage #rightdiv img {
+        display: none;
+    }
+
+    #mainpage #bottomdiv {
+        left: 5px;
+    }
+
+    #mainpage {
+        height: 70vh;
+    }
 }
