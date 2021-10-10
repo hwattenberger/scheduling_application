@@ -79,12 +79,12 @@ Non-Admin User: jill@jill.com Password: jill
 ## 🎈 What did I learn? <a name="learnings"></a>
 This project took a while and I learned loads.
 - Data model.  I went through a number of iterations on how to store schedules.  Ultimately I have a much better understanding of when to make certain choices of creating new Schemas/Models/Documents and when to imbed.
-- MongoDB.  I hadn't used pipelines before and spend a good deal of time learning how to extract complex data from a database.
-- Dates.  Dealing with dates with a server with a different timezone.  I still have more to learn here.
-- Authentication.  I understanding authentication a lot more.  Certainly using passport but also middleware in NodeJS.  As part of this project, I did research into sessions & JWT.
-- Deploying.  This is deployed in Heroku on the back-end and Netlift for React so learning about how to do that and also dealing with CORS.
+- MongoDB.  I hadn't used pipelines before and spent a good deal of time learning how to extract complex data from a database.
+- Dates.  Dealing with dates with a server with a different timezone.  I learned some but still have more to learn here.
+- Authentication.  I understanding authentication a lot more.  Certainly using passport but also middleware in NodeJS.  As part of this project, I did research into sessions & JWT.  Happy that I was able to use Google auth in addition to native.
+- Deploying.  This is deployed in Heroku on the back-end and Netlify for React so learning about how to do that and also dealing with CORS.
 - Code organization.  I am reasonably happy with the output but I think there's still opportunity to improve especially with my React components (could be more split up into more appropriate folders).
-- React.  I now understanding much better useContext and useReducer.
+- React.  I spent a lot of time on the React portion of this application.  Among other things, I now understanding much better useContext and useReducer.
 - MaterialUI.  I wanted to try using something instead of making everything from scratch.  It certainly saved some time and I was able to see many different components.  I liked using the Snackbar - I'd use that more broadly in future projects to help users understand that what they are doing is successful (or unsuccesful)
 
 ## 🎈 Todos <a name="todos"></a>
